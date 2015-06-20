@@ -336,6 +336,8 @@ namespace Kassiopeia
             fEvent->ParentRunId() = fRun->GetRunId();
 
             // execute event
+ 
+            fStep->PauseFlag() = true;  // pls addition.
             ExecuteEvent();
 
             // update run
@@ -399,8 +401,34 @@ namespace Kassiopeia
             delete tParticle;
             fEvent->ParticleQueue().pop_front();
 
+
+
+        while( (fStep->PauseFlag() == true) && ((fEvent->TotalSteps() == fStepIndex) || (fStep->FinalParticle().IsActive() == true)) )  // pls addition.
+            {
+
             // execute a track
-            ExecuteTrack();
+            ExecuteTrack(); 
+
+        // send report  ( pls addition ).
+        if( fStep->GetStepId() % 1000 == 0 )
+            {
+            stepmsg( eNormal ) << "processing step " << fStep->GetStepId() << "... (";
+            stepmsg << "z = " << fStep->InitialParticle().GetPosition().Z() << ", ";
+            stepmsg << "r = " << fStep->InitialParticle().GetPosition().Perp() << ", ";
+            stepmsg << "k = " << fStep->InitialParticle().GetKineticEnergy_eV() << ", ";
+            stepmsg << "e = " << fStep->InitialParticle().GetKineticEnergy_eV() + (fStep->InitialParticle().GetCharge() / KConst::Q()) * fStep->InitialParticle().GetElectricPotential();
+            stepmsg << ")" << reom;
+            }
+
+            }
+
+           if (fStep->PauseFlag() == false)
+              // execute a track
+              ExecuteTrack();
+// end pls additions.
+
+  
+
 
             // move particles in track queue to event queue
             while( fTrack->ParticleQueue().empty() == false )
@@ -436,6 +464,10 @@ namespace Kassiopeia
 
     void KSRoot::ExecuteTrack()
     {
+
+        if (fStep->PauseFlag() == false || (fEvent->TotalSteps() == fStepIndex)) // pls addition.
+        {
+
         // reset track
         fTrack->TrackId() = fTrackIndex;
         fTrack->TotalSteps() = 0;
@@ -456,6 +488,9 @@ namespace Kassiopeia
         // initialize step objects
         fStep->InitialParticle() = fTrack->InitialParticle();
         fStep->FinalParticle() = fTrack->InitialParticle();
+
+        }   // end pls addition.
+
 
         while( fStep->FinalParticle().IsActive() == true )
         {
@@ -484,6 +519,9 @@ namespace Kassiopeia
                 fTrack->DiscreteEnergyChange() += fStep->DiscreteEnergyChange();
                 fTrack->DiscreteMomentumChange() += fStep->DiscreteMomentumChange();
                 fTrack->DiscreteSecondaries() += fStep->DiscreteSecondaries();
+                if (fStep->PauseFlag() == true && fStep->FinalParticle().IsActive() == true) 
+                  return;  // pls addition:  get out of this track for now.
+
             }
         }
 
