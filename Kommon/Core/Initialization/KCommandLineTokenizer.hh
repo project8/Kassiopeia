@@ -28,7 +28,7 @@ namespace katrin
 
         public:
             void ProcessCommandLine( int anArgc, char** anArgv );
-
+            void ProcessCommandLine();  // pls hack
             const vector< string >& GetFiles();
             const map< string, string >& GetVariables();
 

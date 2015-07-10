@@ -385,7 +385,7 @@
         name="quadrupole_trap_simulation"
         run="1"
         seed="51385"
-        events="10"
+        events="1"
         magnetic_field="field_electromagnet"
         electric_field="field_electrostatic"
         space="space_world"

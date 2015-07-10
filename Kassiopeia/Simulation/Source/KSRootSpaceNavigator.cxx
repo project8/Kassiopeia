@@ -40,11 +40,20 @@ namespace Kassiopeia
 
     void KSRootSpaceNavigator::CalculateNavigation( const KSTrajectory& aTrajectory, const KSParticle& aTrajectoryInitialParticle, const KSParticle& aTrajectoryFinalParticle, const KThreeVector& aTrajectoryCenter, const double& aTrajectoryRadius, const double& aTrajectoryStep, KSParticle& aNavigationParticle, double& aNavigationStep, bool& aNavigationFlag )
     {
+
+//printf("nav check 1\n");  // pls hack
+
         if( fSpaceNavigator == NULL )
         {
             navmsg( eError ) << "<" << GetName() << "> cannot calculate navigation with no space navigator set" << eom;
         }
+
+//printf("nav check 2\n");  // pls hack
+
         fSpaceNavigator->CalculateNavigation( aTrajectory, aTrajectoryInitialParticle, aTrajectoryFinalParticle, aTrajectoryCenter, aTrajectoryRadius, aTrajectoryStep, aNavigationParticle, aNavigationStep, aNavigationFlag );
+
+//printf("nav check 3\n");  // pls hack.
+
         return;
     }
     void KSRootSpaceNavigator::ExecuteNavigation( const KSParticle& aNavigationParticle, KSParticle& aFinalParticle, KSParticleQueue& aSecondaries ) const

@@ -23,14 +23,19 @@ using namespace katrin;
 
 int main( int argc, char** argv )
 {
-    if( argc == 1 )
-    {
-        cout << "usage: ./Kassiopeia <config_file_one.xml> [<config_file_one.xml> <...>] [ -r variable1=value1 variable2=value ... ]" << endl;
-        exit( -1 );
-    }
+
+// pls hack:
+//    if( argc == 1 )
+//    {
+//        cout << "usage: ./Kassiopeia <config_file_one.xml> [<config_file_one.xml> <...>] [ -r variable1=value1 variable2=value ... ]" << endl;
+//        exit( -1 );
+//    }
+// end pls hack.
+
 
     KCommandLineTokenizer tCommandLine;
-    tCommandLine.ProcessCommandLine( argc, argv );
+//    tCommandLine.ProcessCommandLine( argc, argv );
+    tCommandLine.ProcessCommandLine();
 
     KXMLTokenizer tTokenizer;
     KVariableProcessor tVariableProcessor( tCommandLine.GetVariables() );
@@ -59,6 +64,7 @@ int main( int argc, char** argv )
 
     mainmsg( eNormal ) << "starting..." << eom;
 
+
     KSToolbox::GetInstance();
 
     KTextFile* tFile;
@@ -66,9 +72,11 @@ int main( int argc, char** argv )
     {
         tFile = new KTextFile();
         tFile->AddToNames( *tIter );
+        cout << *tIter << "\n"; // pls hack.  Check filename.
         tTokenizer.ProcessFile( tFile );
         delete tFile;
     }
+
 
     KSToolbox::DeleteInstance();
 

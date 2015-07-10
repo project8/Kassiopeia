@@ -15,6 +15,23 @@ namespace katrin
     {
     }
 
+
+
+    void KCommandLineTokenizer::ProcessCommandLine()  // pls hack.
+    {
+
+        string tFileName;
+        tFileName = "/home/penny/Kassiopeia/Kassiopeia/XML/Examples/QuadrupoleTrapSimulation.xml";
+        fFiles.push_back( tFileName );
+        initmsg_debug( "using xml file named <" << tFileName << ">" << eom );
+
+        return;
+    }
+
+
+
+
+
     void KCommandLineTokenizer::ProcessCommandLine( int anArgC, char** anArgV )
     {
         if( anArgC <= 1 )
