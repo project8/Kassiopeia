@@ -385,7 +385,7 @@
         name="quadrupole_trap_simulation"
         run="1"
         seed="51385"
-        events="1"
+        events="2"
         magnetic_field="field_electromagnet"
         electric_field="field_electrostatic"
         space="space_world"
@@ -398,10 +398,11 @@
     />
 
 </kassiopeia>
+    
 
 <vtk_window 
     name="vtk_window"
-    enable_display="true"
+    enable_display="false"
     enable_write="true"
     frame_title="KGeoBag Visualization"
     frame_size_x="1024"
@@ -414,10 +415,12 @@
     multi_samples="4"
     depth_peeling="10"
 >
+
     <vtk_geometry_painter 
         name="geometry_painter" 
         surfaces="world/quadrupole_trap/#"
     />
+
     <vtk_track_painter
         name="track_painter"
         file="QuadrupoleTrapSimulation.root"

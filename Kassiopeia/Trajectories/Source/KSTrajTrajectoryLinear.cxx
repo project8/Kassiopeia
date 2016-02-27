@@ -34,6 +34,7 @@ namespace Kassiopeia
         fLength = aLength;
         return;
     }
+
     const double& KSTrajTrajectoryLinear::GetLength() const
     {
         return fLength;

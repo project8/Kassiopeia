@@ -8,7 +8,7 @@ set( KASPER_BUILD TRUE )
 set( CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} )
 
 # use, i.e. don't skip the full RPATH for the build tree
-set( CMAKE_SKIP_BUILD_RPATH FALSE )
+set( CMAKE_SKIP_BUILD_RPATH TRUE )
 
 # when building, don't use the install RPATH already
 #( but later on when installing )
@@ -45,7 +45,7 @@ set( CMAKE_C_FLAGS ${CMAKE_C_FLAGS_INIT} )
 set( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_INIT} )
 set( CMAKE_EXE_LINKER_FLAG ${CMAKE_EXE_LINKER_FLAGS_INIT} )
 
-option( GCC_FIX_LINKER_ERROR "Fix linker errors with some GCC versions by adding the --no-as-needed flag" OFF )
+option( GCC_FIX_LINKER_ERROR "Fix linker errors with some GCC versions by adding the --no-as-needed flag" ON )
 if( GCC_FIX_LINKER_ERROR )
     set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-as-needed" )
 endif( GCC_FIX_LINKER_ERROR )

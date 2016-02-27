@@ -21,7 +21,8 @@ namespace katrin
     {
 
         string tFileName;
-        tFileName = "/home/penny/Kassiopeia/Kassiopeia/XML/Examples/QuadrupoleTrapSimulation.xml";
+//        tFileName = "/home/penny/project8/locust_mc/kassiopeia/Kassiopeia/XML/Examples/QuadrupoleTrapSimulation.xml";
+        tFileName = "/home/penny/project8/CoilFieldLines.xml";
         fFiles.push_back( tFileName );
         initmsg_debug( "using xml file named <" << tFileName << ">" << eom );
 

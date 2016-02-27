@@ -1,0 +1,12 @@
+prefix=/home/penny/project8/locust_mc/kassiopeia/install
+exec_prefix=/home/penny/project8/locust_mc/kassiopeia/install/bin
+libdir=/home/penny/project8/locust_mc/kassiopeia/install/lib
+includedir=/home/penny/project8/locust_mc/kassiopeia/install/include
+rpath=${libdir} /usr/local/root/lib
+
+Name: KGeoBag
+Description: 
+Version: 2.1.0
+
+Libs: -L${libdir} -L/usr/local/root/lib  -lKGeoBagMath -lKGeoBagMathLinearAlgebra -lKGeoBagMathSpaceTree -lKGeoBagCore -lKGeoBagShapes -lKGeoBagMesh -lKGeoBagAxialMesh -lKGeoBagDiscreteRotationalMesh -lKGeoBagAppearance -lKGeoBagMetrics -lKGeoBagRandom -lKGeoBagIntersection -lKGeoBagDeformation -lKGeoBagBasicVisualization -lKGeoBagVtkVisualization -lKGeoBagROOTVisualization -lKGeoBagBindings -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -ldl
+Cflags: -I${includedir} -I/usr/local/include -I/usr/local/include/vtk-6.2 -I/usr/local/root/include

@@ -77,6 +77,7 @@ namespace Kassiopeia
             unsigned int fEventIndex;
             unsigned int fTrackIndex;
             unsigned int fStepIndex;
+            unsigned int fPersistentStepIndex;  // pls edit
     };
 
 }
