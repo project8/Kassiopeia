@@ -321,10 +321,12 @@ class KSParticle
     //magnetic field (units are tesla)
 
     const KThreeVector& GetMagneticField() const;
+    const KThreeVector& GetGuidingCenterMagneticField() const;
 
     void SetMagneticField(const KThreeVector&);
 
     void RecalculateMagneticField() const;
+    void RecalculateGuidingCenterMagneticField() const;
 
     //electric field (units are volt/meter)
 
@@ -352,12 +354,14 @@ class KSParticle
 
   protected:
     mutable KThreeVector fMagneticField;
+    mutable KThreeVector fGuidingCenterMagneticField;
     mutable KThreeVector fElectricField;
     mutable KThreeMatrix fMagneticGradient;
     mutable double fElectricPotential;
 
   protected:
     mutable void (KSParticle::*fGetMagneticFieldAction)() const;
+    mutable void (KSParticle::*fGetGuidingCenterMagneticFieldAction)() const;
     mutable void (KSParticle::*fGetElectricFieldAction)() const;
     mutable void (KSParticle::*fGetMagneticGradientAction)() const;
     mutable void (KSParticle::*fGetElectricPotentialAction)() const;

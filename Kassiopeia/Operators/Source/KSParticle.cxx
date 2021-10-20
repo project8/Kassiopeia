@@ -77,6 +77,7 @@ KSParticle::KSParticle() :
     fElectricPotential(0.),
 
     fGetMagneticFieldAction(&KSParticle::RecalculateMagneticField),
+    fGetGuidingCenterMagneticFieldAction(&KSParticle::RecalculateGuidingCenterMagneticField),
     fGetElectricFieldAction(&KSParticle::RecalculateElectricField),
     fGetMagneticGradientAction(&KSParticle::RecalculateMagneticGradient),
     fGetElectricPotentialAction(&KSParticle::RecalculateElectricPotential),
@@ -160,6 +161,7 @@ KSParticle::KSParticle(const KSParticle& aParticle) :
     fElectricPotential(aParticle.fElectricPotential),
 
     fGetMagneticFieldAction(aParticle.fGetMagneticFieldAction),
+    fGetGuidingCenterMagneticFieldAction(aParticle.fGetGuidingCenterMagneticFieldAction),
     fGetElectricFieldAction(aParticle.fGetElectricFieldAction),
     fGetMagneticGradientAction(aParticle.fGetMagneticGradientAction),
     fGetElectricPotentialAction(aParticle.fGetElectricPotentialAction),
@@ -243,6 +245,7 @@ void KSParticle::operator=(const KSParticle& aParticle)
     fElectricPotential = aParticle.fElectricPotential;
 
     fGetMagneticFieldAction = aParticle.fGetMagneticFieldAction;
+    fGetGuidingCenterMagneticFieldAction = aParticle.fGetGuidingCenterMagneticFieldAction;
     fGetElectricFieldAction = aParticle.fGetElectricFieldAction;
     fGetMagneticGradientAction = aParticle.fGetMagneticGradientAction;
     fGetElectricPotentialAction = aParticle.fGetElectricPotentialAction;
@@ -527,6 +530,7 @@ KSElectricField* KSParticle::GetElectricFieldCalculator() const
 void KSParticle::ResetFieldCaching()
 {
     fGetMagneticFieldAction = &KSParticle::RecalculateMagneticField;
+    fGetGuidingCenterMagneticFieldAction = &KSParticle::RecalculateGuidingCenterMagneticField;
     fGetElectricFieldAction = &KSParticle::RecalculateElectricField;
     fGetMagneticGradientAction = &KSParticle::RecalculateMagneticGradient;
     fGetElectricPotentialAction = &KSParticle::RecalculateElectricPotential;
@@ -602,6 +606,7 @@ void KSParticle::SetTime(const double& t)
     oprmsg_debug("[" << fTime << "]" << eom);
 
     fGetMagneticFieldAction = &KSParticle::RecalculateMagneticField;
+    fGetGuidingCenterMagneticFieldAction = &KSParticle::RecalculateGuidingCenterMagneticField;
     fGetElectricFieldAction = &KSParticle::RecalculateElectricField;
     fGetMagneticGradientAction = &KSParticle::RecalculateMagneticGradient;
     fGetElectricPotentialAction = &KSParticle::RecalculateElectricPotential;
@@ -673,6 +678,7 @@ void KSParticle::SetPosition(const KThreeVector& aPosition)
     oprmsg_debug("[" << fPosition[0] << ", " << fPosition[1] << ", " << fPosition[2] << "]" << eom);
 
     fGetMagneticFieldAction = &KSParticle::RecalculateMagneticField;
+    fGetGuidingCenterMagneticFieldAction = &KSParticle::RecalculateGuidingCenterMagneticField;
     fGetElectricFieldAction = &KSParticle::RecalculateElectricField;
     fGetMagneticGradientAction = &KSParticle::RecalculateMagneticGradient;
     fGetElectricPotentialAction = &KSParticle::RecalculateElectricPotential;
@@ -696,6 +702,7 @@ void KSParticle::SetPosition(const double& anX, const double& aY, const double& 
     oprmsg_debug("[" << fPosition[0] << ", " << fPosition[1] << ", " << fPosition[2] << "]" << eom);
 
     fGetMagneticFieldAction = &KSParticle::RecalculateMagneticField;
+    fGetGuidingCenterMagneticFieldAction = &KSParticle::RecalculateGuidingCenterMagneticField;
     fGetElectricFieldAction = &KSParticle::RecalculateElectricField;
     fGetMagneticGradientAction = &KSParticle::RecalculateMagneticGradient;
     fGetElectricPotentialAction = &KSParticle::RecalculateElectricPotential;
@@ -719,6 +726,7 @@ void KSParticle::SetX(const double& anX)
     oprmsg_debug("[" << fPosition[0] << ", " << fPosition[1] << ", " << fPosition[2] << "]" << eom);
 
     fGetMagneticFieldAction = &KSParticle::RecalculateMagneticField;
+    fGetGuidingCenterMagneticFieldAction = &KSParticle::RecalculateGuidingCenterMagneticField;
     fGetElectricFieldAction = &KSParticle::RecalculateElectricField;
     fGetMagneticGradientAction = &KSParticle::RecalculateMagneticGradient;
     fGetElectricPotentialAction = &KSParticle::RecalculateElectricPotential;
@@ -742,6 +750,7 @@ void KSParticle::SetY(const double& aY)
     oprmsg_debug("[" << fPosition[0] << ", " << fPosition[1] << ", " << fPosition[2] << "]" << eom);
 
     fGetMagneticFieldAction = &KSParticle::RecalculateMagneticField;
+    fGetGuidingCenterMagneticFieldAction = &KSParticle::RecalculateGuidingCenterMagneticField;
     fGetElectricFieldAction = &KSParticle::RecalculateElectricField;
     fGetMagneticGradientAction = &KSParticle::RecalculateMagneticGradient;
     fGetElectricPotentialAction = &KSParticle::RecalculateElectricPotential;
@@ -765,6 +774,7 @@ void KSParticle::SetZ(const double& aZ)
     oprmsg_debug("[" << fPosition[0] << ", " << fPosition[1] << ", " << fPosition[2] << "]" << eom);
 
     fGetMagneticFieldAction = &KSParticle::RecalculateMagneticField;
+    fGetGuidingCenterMagneticFieldAction = &KSParticle::RecalculateGuidingCenterMagneticField;
     fGetElectricFieldAction = &KSParticle::RecalculateElectricField;
     fGetMagneticGradientAction = &KSParticle::RecalculateMagneticGradient;
     fGetElectricPotentialAction = &KSParticle::RecalculateElectricPotential;
@@ -1613,6 +1623,13 @@ const KThreeVector& KSParticle::GetMagneticField() const
     return fMagneticField;
 }
 
+const KThreeVector& KSParticle::GetGuidingCenterMagneticField() const
+{
+    (this->*fGetGuidingCenterMagneticFieldAction)();
+
+    return fGuidingCenterMagneticField;
+}
+
 void KSParticle::SetMagneticField(const KThreeVector& aMagneticField)
 {
     fMagneticField = aMagneticField;
@@ -1621,6 +1638,7 @@ void KSParticle::SetMagneticField(const KThreeVector& aMagneticField)
     oprmsg_debug("[" << fMagneticField[0] << ", " << fMagneticField[1] << ", " << fMagneticField[2] << "]" << eom);
 
     fGetMagneticFieldAction = &KSParticle::DoNothing;
+    fGetGuidingCenterMagneticFieldAction = &KSParticle::RecalculateGuidingCenterMagneticField;
 
     fGetLongMomentumAction = &KSParticle::RecalculateLongMomentum;
     fGetTransMomentumAction = &KSParticle::RecalculateTransMomentum;
@@ -1643,6 +1661,18 @@ void KSParticle::RecalculateMagneticField() const
 
     fMagneticFieldCalculator->CalculateField(GetPosition(), GetTime(), fMagneticField);
     fGetMagneticFieldAction = &KSParticle::DoNothing;
+    return;
+}
+
+void KSParticle::RecalculateGuidingCenterMagneticField() const
+{
+    if (!fMagneticFieldCalculator) {
+        fMagneticField = KThreeVector::sZero;
+        return;
+    }
+
+    fMagneticFieldCalculator->CalculateField(GetGuidingCenterPosition(), GetTime(), fGuidingCenterMagneticField);
+    fGetGuidingCenterMagneticFieldAction = &KSParticle::DoNothing;
     return;
 }
 
@@ -2297,6 +2327,7 @@ STATICINT sKSParticleDict =
     KSDictionary<KSParticle>::AddComponent(&KSParticle::GetPolarAngleToZ, "polar_angle_to_z") +
     KSDictionary<KSParticle>::AddComponent(&KSParticle::GetAzimuthalAngleToX, "azimuthal_angle_to_x") +
     KSDictionary<KSParticle>::AddComponent(&KSParticle::GetMagneticField, "magnetic_field") +
+    KSDictionary<KSParticle>::AddComponent(&KSParticle::GetGuidingCenterMagneticField, "guiding_center_magnetic_field") +
     KSDictionary<KSParticle>::AddComponent(&KSParticle::GetElectricField, "electric_field") +
     KSDictionary<KSParticle>::AddComponent(&KSParticle::GetMagneticGradient, "magnetic_gradient") +
     KSDictionary<KSParticle>::AddComponent(&KSParticle::GetElectricPotential, "electric_potential") +
