@@ -10,6 +10,8 @@
 
 using namespace std;
 using namespace katrin;
+using KGeoBag::KThreeMatrix;
+using KGeoBag::KThreeVector;
 
 namespace Kassiopeia
 {
@@ -187,8 +189,11 @@ KSParticle::KSParticle(const KSParticle& aParticle) :
     fAlignedSpin(aParticle.fAlignedSpin),
     fSpinAngle(aParticle.fSpinAngle)
 {}
-void KSParticle::operator=(const KSParticle& aParticle)
+KSParticle& KSParticle::operator=(const KSParticle& aParticle)
 {
+    if (this == &aParticle)
+        return *this;
+
     fLabel = aParticle.fLabel;
     fIndexNumber = aParticle.fIndexNumber;
     fParentRunId = aParticle.fParentRunId;
@@ -270,8 +275,10 @@ void KSParticle::operator=(const KSParticle& aParticle)
 
     fAlignedSpin = aParticle.fAlignedSpin;
     fSpinAngle = aParticle.fSpinAngle;
+
+    return *this;
 }
-KSParticle::~KSParticle() {}
+KSParticle::~KSParticle() = default;
 
 void KSParticle::DoNothing() const
 {
