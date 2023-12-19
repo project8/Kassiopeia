@@ -1,23 +1,44 @@
-# Kassiopeia
-
-This Simulation package allows to run highly customizable particle tracking simulations
-along with calculations of electric and magnetic fields.
-
-Find a full user guide under http://katrin-experiment.github.io/Kassiopeia/index.html
-
 [![Release](https://img.shields.io/github/v/release/KATRIN-Experiment/Kassiopeia)](https://github.com/KATRIN-Experiment/Kassiopeia/releases)
 [![Code Size](https://img.shields.io/github/languages/code-size/KATRIN-Experiment/Kassiopeia)](https://github.com/KATRIN-Experiment/Kassiopeia)
-[![Image Size](https://img.shields.io/docker/image-size/katrinexperiment/kassiopeia)](https://hub.docker.com/r/katrinexperiment/kassiopeia)
 [![Issues](https://img.shields.io/github/issues/KATRIN-Experiment/Kassiopeia)](https://github.com/KATRIN-Experiment/Kassiopeia/issues)
 [![Pull Requests](https://img.shields.io/github/issues-pr/KATRIN-Experiment/Kassiopeia)](https://github.com/KATRIN-Experiment/Kassiopeia/pulls)
 [![Last Commit](https://img.shields.io/github/last-commit/KATRIN-Experiment/Kassiopeia)](https://github.com/KATRIN-Experiment/Kassiopeia/commits)
 [![Contributors](https://img.shields.io/github/contributors/KATRIN-Experiment/Kassiopeia)](https://github.com/KATRIN-Experiment/Kassiopeia/graphs/contributors)
 [![Gitter](https://badges.gitter.im/kassiopeia-simulation/community.svg)](https://gitter.im/kassiopeia-simulation/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/KATRIN-Experiment/KassiopeiaBinder/HEAD)
 
  Kassiopeia: Simulation of electric and magnetic fields and particle tracking
 ==============================================================================
 
+
+This simulation package by [the KATRIN collaboration](https://katrin.kit.edu) allows to run highly customizable particle tracking simulations
+along with calculations of electric and magnetic fields.
+
+**Full user guide:** http://katrin-experiment.github.io/Kassiopeia/index.html
+
+**Quick start:** [**Try it out online**](https://mybinder.org/v2/gh/KATRIN-Experiment/KassiopeiaBinder/HEAD)
+in an interactive Binder session. Open a "VNC (Desktop)" tab and a terminal tab and run
+
+```
+Kassiopeia $KASPERSYS/config/Kassiopeia/Examples/DipoleTrapSimulation.xml
+```
+
+to run your first simulation! *Note: A VTK error indicates that the "VNC (Desktop)" tab is not open yet.*
+
+**Cite [our paper](https://iopscience.iop.org/article/10.1088/1367-2630/aa6950):**
+
+```
+D. Furse et al. (2017) New J. Phys. 19 053012: “Kassiopeia: A Modern, Extensible C++ Particle Tracking Package” (doi:10.1088/1367-2630/aa6950)
+```
+
+ Docker images
+--------------
+
+**All images:** https://github.com/orgs/KATRIN-Experiment/packages
+
+The `kassiopeia/full` image comes with a JupyterLab installation, can run on Kubernetes based JupyterHubs and is also used for the "try it out online" link above.
+
+**More information:** [Docker README](Docker/README.md)
 
  System requirements:
 ----------------------
@@ -39,18 +60,11 @@ Dependencies:
 Optional Dependencies:
 *   FFTW (https://fftw.org) version 3.3.4 or higher
 *   HDF5 (https://support.hdfgroup.org/HDF5/)
-*   LibXml2 (https://www.xmlsoft.org)
 *   Log4CXX (https://logging.apache.org/log4cxx)
 *   MPI (https://www.open-mpi.org or mpich.org)
 *   OpenCL (https://www.khronos.org/opencl), installation details depend on your system
-*   OpenMP (https://www.openmp.org)
-*   OpenSSL (https://openssl.org) version 1.0.0 or higher
-*   PCL (https://www.pointclouds.org) version 1.2 or higher
 *   PETSc (https://mcs.anl.gov/petsc)
-*   SQLite3 (https://sqlite.org), for IDLE local storage
-*   TBB (https://software.intel.com/en-us/tbb)
 *   VTK (https://www.vtk.org) version 6.1 or higher
-*   zlib (https://www.zlib.net)
 *   pdflatex (for making the documentation; minimum version not known)
 *   doxygen (for making the documentation; minimum version not known)
 
@@ -67,7 +81,7 @@ Optional Dependencies:
         build-essential cmake cmake-curses-gui \
         libqt4-dev libx11-dev libxext-dev libxft-dev  libxpm-dev \
         libboost-all-dev libfftw3-dev libgsl0-dev libhdf5-dev liblog4cxx-dev libomp-dev libopenmpi-dev \
-        libpcl-dev libsqlite3-dev libssl-dev libtbb-dev libvtk6-dev libxml2-dev ocl-icd-opencl-dev zlib1g-dev
+        libpcl-dev libsqlite3-dev libssl-dev libvtk6-dev libxml2-dev ocl-icd-opencl-dev zlib1g-dev
     ```
 
 ### Fedora Linux 31
@@ -80,7 +94,7 @@ Optional Dependencies:
         root-core root-io-xmlparser root-minuit2 root-spectrum \
         vtk vtk-qt vtk-java \
         boost-devel fftw-devel gsl-devel hdf5-devel libomp-devel libxml2-devel log4cxx-devel \
-        ocl-icd-devel openmpi-devel openssl-devel pcl-devel sqlite-devel tbb-devel vtk-devel zlib-devel
+        ocl-icd-devel openmpi-devel openssl-devel pcl-devel sqlite-devel vtk-devel zlib-devel
     ```
 
  Installation
@@ -159,46 +173,6 @@ Optional Dependencies:
     sets the `$KASPERSYS` environment variable to the install directory.
 
 
- Docker container
-------------------
-
-1. A Docker container with Kasper is available at
-    https://hub.docker.com/r/katrinexperiment/kassiopeia
-
-2. This Docker container can be used with Docker (with superuser privileges).
-    1. Pull the container to your system with
-        ```
-        > sudo docker pull katrinexperiment/kassiopeia
-        ```
-    2. Open a shell inside the container with
-        ```
-        > sudo docker run --rm -it katrinexperiment/kassiopeia /bin/bash
-        ```
-
-3. The Docker container can also be used with Singularity (as a regular user).
-    1. Pull the container to your system with
-        ```
-        > singularity pull docker://katrinexperiment/kassiopeia
-        ```
-    2. Open a shell inside the container with
-        ```
-        > singularity shell docker://katrinexperiment/kassiopeia
-        ```
-        or (if a local copy is available already)
-        ```
-        > singularity shell kassiopeia-latest.sif
-        ```
-
-4. Build the container locally with
-    ```
-    > sudo docker build -t katrinexperiment/kassiopeia .
-    ```
-    an (optionally) upload the local container to DockerHub with
-    ```
-    > sudo docker push katrinexperiment/kassiopeia
-    ```
-
-
  Documentation
 ---------------
 
@@ -229,7 +203,17 @@ Join the Kassiopeia community on Gitter: https://gitter.im/kassiopeia-simulation
 
 You can [contribute changes](https://github.com/KATRIN-Experiment/Kassiopeia/compare), [report issues](https://github.com/KATRIN-Experiment/Kassiopeia/issues/new) and [join discussions](https://github.com/KATRIN-Experiment/Kassiopeia/discussions) on Github.
 
+### Regular Meeting
+
+We also organize a regular meeting via Zoom. 
+
+Kassiopeia **users as well as developers** can join, ask questions, raise issues and discuss development topics. 
+It does not matter whether you are already an expert or a complete beginner. **Everyone is welcome!** 
+
+The meeting is announced via email. 
+Please register for the [mailing list](https://www.lists.kit.edu/sympa/subscribe/kassiopeia-user) if you are interested. 
+
 Primary email contacts:
 *    Kasper development list: katrin-kasper@lists.kit.edu
-*    Richard Salomon: richardsalomon@wwu.de
-*    Benedikt Bieringer: benedikt.b@wwu.de
+*    Richard Salomon: richardsalomon@uni-muenster.de
+*    Benedikt Bieringer: benedikt.b@uni-muenster.de
