@@ -1,5 +1,5 @@
-#ifndef KFMElectrostaticLocalCoefficientSet_HH__
-#define KFMElectrostaticLocalCoefficientSet_HH__
+#ifndef KFMMagnetostaticLocalCoefficientSet_HH__
+#define KFMMagnetostaticLocalCoefficientSet_HH__
 
 #include "KFMScalarMultipoleExpansion.hh"
 
@@ -8,8 +8,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticLocalCoefficientSet.hh
-*@class KFMElectrostaticLocalCoefficientSet
+*@file KFMMagnetostaticLocalCoefficientSet.hh
+*@class KFMMagnetostaticLocalCoefficientSet
 *@brief
 *@details
 *
@@ -19,17 +19,17 @@ namespace KEMField
 *
 */
 
-class KFMElectrostaticLocalCoefficientSet : public KFMScalarMultipoleExpansion
+class KFMMagnetostaticLocalCoefficientSet : public KFMScalarMultipoleExpansion
 {
   public:
-    KFMElectrostaticLocalCoefficientSet();
-    ~KFMElectrostaticLocalCoefficientSet() override;
-    KFMElectrostaticLocalCoefficientSet(const KFMElectrostaticLocalCoefficientSet& copyObject) :
+    KFMMagnetostaticLocalCoefficientSet();
+    ~KFMMagnetostaticLocalCoefficientSet() override;
+    KFMMagnetostaticLocalCoefficientSet(const KFMMagnetostaticLocalCoefficientSet& copyObject) :
         KFMScalarMultipoleExpansion(copyObject)
     {
         ;
     };
-    KFMElectrostaticLocalCoefficientSet& operator=(const KFMElectrostaticLocalCoefficientSet& copyObject) = default;
+    KFMMagnetostaticLocalCoefficientSet& operator=(const KFMMagnetostaticLocalCoefficientSet& copyObject) = default;
     ;
 
     std::string ClassName() const override;
@@ -40,7 +40,7 @@ class KFMElectrostaticLocalCoefficientSet : public KFMScalarMultipoleExpansion
   private:
 };
 
-template<typename Stream> Stream& operator>>(Stream& s, KFMElectrostaticLocalCoefficientSet& aData)
+template<typename Stream> Stream& operator>>(Stream& s, KFMMagnetostaticLocalCoefficientSet& aData)
 {
     s.PreStreamInAction(aData);
 
@@ -62,7 +62,7 @@ template<typename Stream> Stream& operator>>(Stream& s, KFMElectrostaticLocalCoe
     return s;
 }
 
-template<typename Stream> Stream& operator<<(Stream& s, const KFMElectrostaticLocalCoefficientSet& aData)
+template<typename Stream> Stream& operator<<(Stream& s, const KFMMagnetostaticLocalCoefficientSet& aData)
 {
     s.PreStreamOutAction(aData);
 
@@ -83,9 +83,9 @@ template<typename Stream> Stream& operator<<(Stream& s, const KFMElectrostaticLo
 }
 
 
-DefineKSAClassName(KFMElectrostaticLocalCoefficientSet)
+DefineKSAClassName(KFMMagnetostaticLocalCoefficientSet)
 
 }  // namespace KEMField
 
 
-#endif /* KFMElectrostaticLocalCoefficientSet_H__ */
+#endif /* KFMMagnetostaticLocalCoefficientSet_H__ */

@@ -1,4 +1,4 @@
-#include "KFMElectrostaticNearFieldToLocalCoefficientCalculator.hh"
+#include "KFMMagnetostaticNearFieldToLocalCoefficientCalculator.hh"
 
 #include "KFMBall.hh"
 #include "KFMCube.hh"
@@ -7,7 +7,7 @@
 namespace KEMField
 {
 
-KFMElectrostaticNearFieldToLocalCoefficientCalculator::KFMElectrostaticNearFieldToLocalCoefficientCalculator() :
+KFMMagnetostaticNearFieldToLocalCoefficientCalculator::KFMMagnetostaticNearFieldToLocalCoefficientCalculator() :
     fDegree(0),
     fNQuadrature(0),
     fLocalCoeffCalc(NULL),
@@ -16,40 +16,40 @@ KFMElectrostaticNearFieldToLocalCoefficientCalculator::KFMElectrostaticNearField
     fConversionFactor = std::sqrt(3.0) / 2.0;  // 2.0/std::sqrt(3.0);
 }
 
-KFMElectrostaticNearFieldToLocalCoefficientCalculator::~KFMElectrostaticNearFieldToLocalCoefficientCalculator()
+KFMMagnetostaticNearFieldToLocalCoefficientCalculator::~KFMMagnetostaticNearFieldToLocalCoefficientCalculator()
 {
     delete fLocalCoeffCalc;
 }
 
-void KFMElectrostaticNearFieldToLocalCoefficientCalculator::SetDegree(int l_max)
+void KFMMagnetostaticNearFieldToLocalCoefficientCalculator::SetDegree(int l_max)
 {
     fDegree = std::fabs(l_max);
     fTempMoments.SetDegree(fDegree);
 }
 
-void KFMElectrostaticNearFieldToLocalCoefficientCalculator::SetNumberOfQuadratureTerms(unsigned int n)
+void KFMMagnetostaticNearFieldToLocalCoefficientCalculator::SetNumberOfQuadratureTerms(unsigned int n)
 {
     fNQuadrature = std::fabs(n);
 }
 
-void KFMElectrostaticNearFieldToLocalCoefficientCalculator::Initialize()
+void KFMMagnetostaticNearFieldToLocalCoefficientCalculator::Initialize()
 {
-    fLocalCoeffCalc = new KFMElectrostaticLocalCoefficientCalculatorNumeric();
+    fLocalCoeffCalc = new KFMMagnetostaticLocalCoefficientCalculatorNumeric();
     fLocalCoeffCalc->SetDegree(fDegree);
     fLocalCoeffCalc->SetNumberOfQuadratureTerms(fNQuadrature);
 }
 
 
-void KFMElectrostaticNearFieldToLocalCoefficientCalculator::ApplyAction(KFMElectrostaticNode* node)
+void KFMMagnetostaticNearFieldToLocalCoefficientCalculator::ApplyAction(KFMMagnetostaticNode* node)
 {
     if (node != NULL && !(node->HasChildren())) {
         KFMExternalIdentitySet* eid_set =
-            KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMExternalIdentitySet>::GetNodeObject(node);
-        KFMCube<3>* cube = KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCube<3>>::GetNodeObject(node);
+            KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMExternalIdentitySet>::GetNodeObject(node);
+        KFMCube<3>* cube = KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCube<3>>::GetNodeObject(node);
 
         if (eid_set != NULL && cube != NULL) {
-            KFMElectrostaticLocalCoefficientSet* l_set =
-                KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMElectrostaticLocalCoefficientSet>::GetNodeObject(
+            KFMMagnetostaticLocalCoefficientSet* l_set =
+                KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMMagnetostaticLocalCoefficientSet>::GetNodeObject(
                     node);
 
             if (l_set != NULL) {

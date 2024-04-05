@@ -1,7 +1,7 @@
-#ifndef KFMElectrostaticLocalCoefficientCalculatorNumeric_HH__
-#define KFMElectrostaticLocalCoefficientCalculatorNumeric_HH__
+#ifndef KFMMagnetostaticLocalCoefficientCalculatorNumeric_HH__
+#define KFMMagnetostaticLocalCoefficientCalculatorNumeric_HH__
 
-#include "KFMElectrostaticMultipoleCalculator.hh"
+#include "KFMMagnetostaticMultipoleCalculator.hh"
 
 //vector math includes
 #include "KVMField.hh"
@@ -18,8 +18,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticLocalCoefficientCalculatorNumeric.hh
-*@class KFMElectrostaticLocalCoefficientCalculatorNumeric
+*@file KFMMagnetostaticLocalCoefficientCalculatorNumeric.hh
+*@class KFMMagnetostaticLocalCoefficientCalculatorNumeric
 *@brief
 *@details
 *
@@ -29,11 +29,11 @@ namespace KEMField
 *
 */
 
-class KFMElectrostaticLocalCoefficientCalculatorNumeric : public KFMElectrostaticMultipoleCalculator
+class KFMMagnetostaticLocalCoefficientCalculatorNumeric : public KFMMagnetostaticMultipoleCalculator
 {
   public:
-    KFMElectrostaticLocalCoefficientCalculatorNumeric();
-    ~KFMElectrostaticLocalCoefficientCalculatorNumeric() override;
+    KFMMagnetostaticLocalCoefficientCalculatorNumeric();
+    ~KFMMagnetostaticLocalCoefficientCalculatorNumeric() override;
 
     void SetDegree(int l_max) override;
 
@@ -52,8 +52,8 @@ class KFMElectrostaticLocalCoefficientCalculatorNumeric : public KFMElectrostati
     KVMPathIntegral<2>* fNumInt1D;
     KVMSurfaceIntegral<2>* fNumInt2D;
 
-    KVMFieldWrapper<KFMElectrostaticLocalCoefficientCalculatorNumeric,
-                    &KFMElectrostaticLocalCoefficientCalculatorNumeric::IrregularSolidHarmonic>* fSolidHarmonicWrapper;
+    KVMFieldWrapper<KFMMagnetostaticLocalCoefficientCalculatorNumeric,
+                    &KFMMagnetostaticLocalCoefficientCalculatorNumeric::IrregularSolidHarmonic>* fSolidHarmonicWrapper;
 
     //internal state to compute solid harmonic
     mutable double fOrigin[3];
@@ -74,4 +74,4 @@ class KFMElectrostaticLocalCoefficientCalculatorNumeric : public KFMElectrostati
 }  // namespace KEMField
 
 
-#endif /* KFMElectrostaticLocalCoefficientCalculatorNumeric_H__ */
+#endif /* KFMMagnetostaticLocalCoefficientCalculatorNumeric_H__ */

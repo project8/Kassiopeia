@@ -1,20 +1,20 @@
-#include "KFMElectrostaticRegionSizeEstimator.hh"
+#include "KFMMagnetostaticRegionSizeEstimator.hh"
 
 namespace KEMField
 {
 
 
-KFMElectrostaticRegionSizeEstimator::KFMElectrostaticRegionSizeEstimator() : fElementContainer(nullptr)
+KFMMagnetostaticRegionSizeEstimator::KFMMagnetostaticRegionSizeEstimator() : fElementContainer(nullptr)
 {
     fEstimator = new KFMBoundaryCalculator<3>();
 }
 
-KFMElectrostaticRegionSizeEstimator::~KFMElectrostaticRegionSizeEstimator()
+KFMMagnetostaticRegionSizeEstimator::~KFMMagnetostaticRegionSizeEstimator()
 {
     delete fEstimator;
 }
 
-void KFMElectrostaticRegionSizeEstimator::ComputeEstimate()
+void KFMMagnetostaticRegionSizeEstimator::ComputeEstimate()
 {
     unsigned int n_elem = fElementContainer->GetNElements();
     for (unsigned int i = 0; i < n_elem; i++) {
@@ -22,17 +22,17 @@ void KFMElectrostaticRegionSizeEstimator::ComputeEstimate()
     }
 }
 
-KFMCube<3> KFMElectrostaticRegionSizeEstimator::GetCubeEstimate() const
+KFMCube<3> KFMMagnetostaticRegionSizeEstimator::GetCubeEstimate() const
 {
     return fEstimator->GetMinimalBoundingCube();
 }
 
-KFMBall<3> KFMElectrostaticRegionSizeEstimator::GetBallEstimate() const
+KFMBall<3> KFMMagnetostaticRegionSizeEstimator::GetBallEstimate() const
 {
     return fEstimator->GetMinimalBoundingBall();
 }
 
-KFMBox<3> KFMElectrostaticRegionSizeEstimator::GetBoxEstimate() const
+KFMBox<3> KFMMagnetostaticRegionSizeEstimator::GetBoxEstimate() const
 {
     return fEstimator->GetMinimalBoundingBox();
 }

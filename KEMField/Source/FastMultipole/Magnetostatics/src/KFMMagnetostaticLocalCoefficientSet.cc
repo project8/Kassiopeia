@@ -1,24 +1,24 @@
-#include "KFMElectrostaticLocalCoefficientSet.hh"
+#include "KFMMagnetostaticLocalCoefficientSet.hh"
 
 
 namespace KEMField
 {
 
-KFMElectrostaticLocalCoefficientSet::KFMElectrostaticLocalCoefficientSet() = default;
+KFMMagnetostaticLocalCoefficientSet::KFMMagnetostaticLocalCoefficientSet() = default;
 
-KFMElectrostaticLocalCoefficientSet::~KFMElectrostaticLocalCoefficientSet() = default;
+KFMMagnetostaticLocalCoefficientSet::~KFMMagnetostaticLocalCoefficientSet() = default;
 
-std::string KFMElectrostaticLocalCoefficientSet::ClassName() const
+std::string KFMMagnetostaticLocalCoefficientSet::ClassName() const
 {
-    return std::string("KFMElectrostaticLocalCoefficientSet");
+    return std::string("KFMMagnetostaticLocalCoefficientSet");
 }
 
-void KFMElectrostaticLocalCoefficientSet::DefineOutputNode(KSAOutputNode* node) const
+void KFMMagnetostaticLocalCoefficientSet::DefineOutputNode(KSAOutputNode* node) const
 {
     KFMScalarMultipoleExpansion::DefineOutputNode(node);
 }
 
-void KFMElectrostaticLocalCoefficientSet::DefineInputNode(KSAInputNode* node)
+void KFMMagnetostaticLocalCoefficientSet::DefineInputNode(KSAInputNode* node)
 {
     KFMScalarMultipoleExpansion::DefineInputNode(node);
 }

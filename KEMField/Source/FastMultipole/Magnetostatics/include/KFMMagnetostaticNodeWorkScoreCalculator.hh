@@ -1,8 +1,8 @@
-#ifndef KFMElectrostaticNodeWorkScoreCalculator_HH__
-#define KFMElectrostaticNodeWorkScoreCalculator_HH__
+#ifndef KFMMagnetostaticNodeWorkScoreCalculator_HH__
+#define KFMMagnetostaticNodeWorkScoreCalculator_HH__
 
-#include "KFMElectrostaticNode.hh"
-#include "KFMElectrostaticTree.hh"
+#include "KFMMagnetostaticNode.hh"
+#include "KFMMagnetostaticTree.hh"
 #include "KFMNodeActor.hh"
 #include "KFMNodeFlagValueInspector.hh"
 #include "KFMObjectRetriever.hh"
@@ -13,8 +13,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticNodeWorkScoreCalculator.hh
-*@class KFMElectrostaticNodeWorkScoreCalculator
+*@file KFMMagnetostaticNodeWorkScoreCalculator.hh
+*@class KFMMagnetostaticNodeWorkScoreCalculator
 *@brief
 *@details
 *
@@ -25,11 +25,11 @@ namespace KEMField
 */
 
 
-class KFMElectrostaticNodeWorkScoreCalculator : public KFMNodeActor<KFMNode<KFMElectrostaticNodeObjects>>
+class KFMMagnetostaticNodeWorkScoreCalculator : public KFMNodeActor<KFMNode<KFMMagnetostaticNodeObjects>>
 {
   public:
-    KFMElectrostaticNodeWorkScoreCalculator();
-    ~KFMElectrostaticNodeWorkScoreCalculator() override;
+    KFMMagnetostaticNodeWorkScoreCalculator();
+    ~KFMMagnetostaticNodeWorkScoreCalculator() override;
 
     void SetNTerms(unsigned int n_terms)
     {
@@ -53,7 +53,7 @@ class KFMElectrostaticNodeWorkScoreCalculator : public KFMNodeActor<KFMNode<KFME
         fTheta = mx_weight;
     };
 
-    void ApplyAction(KFMNode<KFMElectrostaticNodeObjects>* node) override;
+    void ApplyAction(KFMNode<KFMMagnetostaticNodeObjects>* node) override;
 
     double GetNodeScore() const
     {
@@ -62,7 +62,7 @@ class KFMElectrostaticNodeWorkScoreCalculator : public KFMNodeActor<KFMNode<KFME
 
   private:
     //internal class which does the actual work and accumulates the necessary data
-    class SingleNodeActor : public KFMNodeActor<KFMNode<KFMElectrostaticNodeObjects>>
+    class SingleNodeActor : public KFMNodeActor<KFMNode<KFMMagnetostaticNodeObjects>>
     {
       public:
         SingleNodeActor()
@@ -95,7 +95,7 @@ class KFMElectrostaticNodeWorkScoreCalculator : public KFMNodeActor<KFMNode<KFME
             fNSparseMatrixElements = 0;
         }
 
-        void ApplyAction(KFMNode<KFMElectrostaticNodeObjects>* node) override
+        void ApplyAction(KFMNode<KFMMagnetostaticNodeObjects>* node) override
         {
             if (node != nullptr) {
 
@@ -111,7 +111,7 @@ class KFMElectrostaticNodeWorkScoreCalculator : public KFMNodeActor<KFMNode<KFME
                 }
 
                 KFMIdentitySet* id_set =
-                    KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMIdentitySet>::GetNodeObject(node);
+                    KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMIdentitySet>::GetNodeObject(node);
                 if (id_set != nullptr) {
                     fNSources += id_set->GetSize();
                     //collocation point id lists have not yet been filled, but this is a reasonable proxy
@@ -155,14 +155,14 @@ class KFMElectrostaticNodeWorkScoreCalculator : public KFMNodeActor<KFMNode<KFME
         double fNSparseMatrixElements;
 
         //condition for a node to have a multipole/local coeff expansion
-        KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> fMultipoleFlagCondition;
-        KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> fLocalCoeffFlagCondition;
+        KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> fMultipoleFlagCondition;
+        KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> fLocalCoeffFlagCondition;
     };
 
     void CalculateFinalScore();
 
     //utility
-    KFMRecursiveActor<KFMNode<KFMElectrostaticNodeObjects>> fRecursiveActor;
+    KFMRecursiveActor<KFMNode<KFMMagnetostaticNodeObjects>> fRecursiveActor;
     SingleNodeActor fSingleNodeActor;
 
     //data used to calculate the score
@@ -192,4 +192,4 @@ class KFMElectrostaticNodeWorkScoreCalculator : public KFMNodeActor<KFMNode<KFME
 }  // namespace KEMField
 
 
-#endif /* KFMElectrostaticNodeWorkScoreCalculator_H__ */
+#endif /* KFMMagnetostaticNodeWorkScoreCalculator_H__ */

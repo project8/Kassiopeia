@@ -1,7 +1,7 @@
-#ifndef KFMElectrostaticMultipoleCalculatorNumeric_HH__
-#define KFMElectrostaticMultipoleCalculatorNumeric_HH__
+#ifndef KFMMagnetostaticMultipoleCalculatorNumeric_HH__
+#define KFMMagnetostaticMultipoleCalculatorNumeric_HH__
 
-#include "KFMElectrostaticMultipoleCalculator.hh"
+#include "KFMMagnetostaticMultipoleCalculator.hh"
 
 //vector math includes
 #include "KVMField.hh"
@@ -18,8 +18,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticMultipoleCalculatorNumeric.hh
-*@class KFMElectrostaticMultipoleCalculatorNumeric
+*@file KFMMagnetostaticMultipoleCalculatorNumeric.hh
+*@class KFMMagnetostaticMultipoleCalculatorNumeric
 *@brief
 *@details
 *
@@ -29,11 +29,11 @@ namespace KEMField
 *
 */
 
-class KFMElectrostaticMultipoleCalculatorNumeric : public KFMElectrostaticMultipoleCalculator
+class KFMMagnetostaticMultipoleCalculatorNumeric : public KFMMagnetostaticMultipoleCalculator
 {
   public:
-    KFMElectrostaticMultipoleCalculatorNumeric();
-    ~KFMElectrostaticMultipoleCalculatorNumeric() override;
+    KFMMagnetostaticMultipoleCalculatorNumeric();
+    ~KFMMagnetostaticMultipoleCalculatorNumeric() override;
 
     void SetDegree(int l_max) override;
 
@@ -52,8 +52,8 @@ class KFMElectrostaticMultipoleCalculatorNumeric : public KFMElectrostaticMultip
     KVMPathIntegral<2>* fNumInt1D;
     KVMSurfaceIntegral<2>* fNumInt2D;
 
-    KVMFieldWrapper<KFMElectrostaticMultipoleCalculatorNumeric,
-                    &KFMElectrostaticMultipoleCalculatorNumeric::RegularSolidHarmonic>* fSolidHarmonicWrapper;
+    KVMFieldWrapper<KFMMagnetostaticMultipoleCalculatorNumeric,
+                    &KFMMagnetostaticMultipoleCalculatorNumeric::RegularSolidHarmonic>* fSolidHarmonicWrapper;
 
     //internal state to compute solid harmonic
     mutable double fOrigin[3];
@@ -74,4 +74,4 @@ class KFMElectrostaticMultipoleCalculatorNumeric : public KFMElectrostaticMultip
 }  // namespace KEMField
 
 
-#endif /* KFMElectrostaticMultipoleCalculatorNumeric_H__ */
+#endif /* KFMMagnetostaticMultipoleCalculatorNumeric_H__ */

@@ -1,9 +1,9 @@
-#include "KFMElectrostaticBoundaryIntegratorEngine_SingleThread.hh"
+#include "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread.hh"
 
 #include "KEMChunkedFileInterface.hh"
 #include "KEMFileInterface.hh"
 #include "KFMDenseBlockSparseMatrix.hh"
-#include "KFMElectrostaticMultipoleBatchCalculator.hh"
+#include "KFMMagnetostaticMultipoleBatchCalculator.hh"
 #include "KFMEmptyIdentitySetRemover.hh"
 #include "KFMLeafConditionActor.hh"
 #include "KFMMatrixOperations.hh"
@@ -23,9 +23,9 @@
 namespace KEMField
 {
 
-const std::string KFMElectrostaticBoundaryIntegratorEngine_SingleThread::fWeightFilePrefix = std::string("stwlw_");
+const std::string KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::fWeightFilePrefix = std::string("stwlw_");
 
-KFMElectrostaticBoundaryIntegratorEngine_SingleThread::KFMElectrostaticBoundaryIntegratorEngine_SingleThread()
+KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::KFMMagnetostaticBoundaryIntegratorEngine_SingleThread()
 {
     fTree = nullptr;
     fContainer = nullptr;
@@ -41,26 +41,26 @@ KFMElectrostaticBoundaryIntegratorEngine_SingleThread::KFMElectrostaticBoundaryI
     fRamWeight = 1;
     fFFTWeight = 1;
 
-    fBatchCalc = new KFMElectrostaticMultipoleBatchCalculator();
-    fMultipoleDistributor = new KFMElectrostaticElementMultipoleDistributor();
+    fBatchCalc = new KFMMagnetostaticMultipoleBatchCalculator();
+    fMultipoleDistributor = new KFMMagnetostaticElementMultipoleDistributor();
     fMultipoleDistributor->SetBatchCalculator(fBatchCalc);
-    fElementNodeAssociator = new KFMElectrostaticElementNodeAssociator();
+    fElementNodeAssociator = new KFMMagnetostaticElementNodeAssociator();
 
-    fLocalCoeffInitializer = new KFMElectrostaticLocalCoefficientInitializer();
-    fMultipoleInitializer = new KFMElectrostaticMultipoleInitializer();
+    fLocalCoeffInitializer = new KFMMagnetostaticLocalCoefficientInitializer();
+    fMultipoleInitializer = new KFMMagnetostaticMultipoleInitializer();
 
-    fLocalCoeffResetter = new KFMElectrostaticLocalCoefficientResetter();
-    fMultipoleResetter = new KFMElectrostaticMultipoleResetter();
+    fLocalCoeffResetter = new KFMMagnetostaticLocalCoefficientResetter();
+    fMultipoleResetter = new KFMMagnetostaticMultipoleResetter();
 
-    fM2MConverter = new KFMElectrostaticRemoteToRemoteConverter();
+    fM2MConverter = new KFMMagnetostaticRemoteToRemoteConverter();
 
-    fM2LConverterInterface = new KFMElectrostaticRemoteToLocalConverterInterface();
-    //    fM2LConverter = new KFMElectrostaticRemoteToLocalConverter();
+    fM2LConverterInterface = new KFMMagnetostaticRemoteToLocalConverterInterface();
+    //    fM2LConverter = new KFMMagnetostaticRemoteToLocalConverter();
 
-    fL2LConverter = new KFMElectrostaticLocalToLocalConverter();
+    fL2LConverter = new KFMMagnetostaticLocalToLocalConverter();
 }
 
-KFMElectrostaticBoundaryIntegratorEngine_SingleThread::~KFMElectrostaticBoundaryIntegratorEngine_SingleThread()
+KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::~KFMMagnetostaticBoundaryIntegratorEngine_SingleThread()
 {
     delete fBatchCalc;
     delete fMultipoleDistributor;
@@ -77,17 +77,17 @@ KFMElectrostaticBoundaryIntegratorEngine_SingleThread::~KFMElectrostaticBoundary
     delete fL2LConverter;
 }
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::SetTree(KFMElectrostaticTree* tree)
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::SetTree(KFMMagnetostaticTree* tree)
 {
     fTree = tree;
-    KFMCube<KFMELECTROSTATICS_DIM>* world_cube;
-    world_cube = KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCube<KFMELECTROSTATICS_DIM>>::GetNodeObject(
+    KFMCube<KFMMAGNETOSTATICS_DIM>* world_cube;
+    world_cube = KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCube<KFMMAGNETOSTATICS_DIM>>::GetNodeObject(
         tree->GetRootNode());
     fWorldLength = world_cube->GetLength();
 }
 
 //set parameters
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::SetParameters(const KFMElectrostaticParameters& params)
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::SetParameters(const KFMMagnetostaticParameters& params)
 {
     fDegree = params.degree;
     fNTerms = (fDegree + 1) * (fDegree + 1);
@@ -99,37 +99,37 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::SetParameters(const 
 
     if (fVerbosity > 4) {
         //print the parameters
-        kfmout << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::SetParameters: top level divisions set to "
+        kfmout << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::SetParameters: top level divisions set to "
                << params.top_level_divisions << kfmendl;
-        kfmout << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::SetParameters: divisions set to "
+        kfmout << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::SetParameters: divisions set to "
                << params.divisions << kfmendl;
-        kfmout << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::SetParameters: degree set to "
+        kfmout << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::SetParameters: degree set to "
                << params.degree << kfmendl;
-        kfmout << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::SetParameters: zero mask size set to "
+        kfmout << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::SetParameters: zero mask size set to "
                << params.zeromask << kfmendl;
-        kfmout << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::SetParameters: max tree depth set to "
+        kfmout << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::SetParameters: max tree depth set to "
                << params.maximum_tree_depth << kfmendl;
     }
 }
 
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::InitializeMultipoleMoments()
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::InitializeMultipoleMoments()
 {
     //the multipole coefficient initializer
-    KFMElectrostaticMultipoleInitializer multipoleInitializer;
+    KFMMagnetostaticMultipoleInitializer multipoleInitializer;
     multipoleInitializer.SetNumberOfTermsInSeries(fNTerms);
 
     //remove any pre-existing multipole expansions
-    KFMNodeObjectRemover<KFMElectrostaticNodeObjects, KFMElectrostaticMultipoleSet> remover;
+    KFMNodeObjectRemover<KFMMagnetostaticNodeObjects, KFMMagnetostaticMultipoleSet> remover;
     fTree->ApplyCorecursiveAction(&remover);
 
     //condition for a node to have a multipole expansion is based on the non-zero multipole moment flag
-    KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> multipole_flag_condition;
+    KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> multipole_flag_condition;
     multipole_flag_condition.SetFlagIndex(1);
     multipole_flag_condition.SetFlagValue(1);
 
     //now we constuct the conditional actor
-    KFMConditionalActor<KFMElectrostaticNode> conditional_actor;
+    KFMConditionalActor<KFMMagnetostaticNode> conditional_actor;
 
     conditional_actor.SetInspectingActor(&multipole_flag_condition);
     conditional_actor.SetOperationalActor(&multipoleInitializer);
@@ -139,29 +139,29 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::InitializeMultipoleM
 
     if (fVerbosity > 4) {
         kfmout
-            << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::InitializeMultipoleMoments: Done initializing multipole moment expansions."
+            << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::InitializeMultipoleMoments: Done initializing multipole moment expansions."
             << kfmendl;
     }
 }
 
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::InitializeLocalCoefficientsForPrimaryNodes()
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::InitializeLocalCoefficientsForPrimaryNodes()
 {
     //sparse initialization only for primary nodes
-    KFMElectrostaticLocalCoefficientInitializer localCoeffInitializer;
+    KFMMagnetostaticLocalCoefficientInitializer localCoeffInitializer;
     localCoeffInitializer.SetNumberOfTermsInSeries(fNTerms);
 
     //delete all pre-existing local coefficient expansions
-    KFMNodeObjectRemover<KFMElectrostaticNodeObjects, KFMElectrostaticLocalCoefficientSet> remover;
+    KFMNodeObjectRemover<KFMMagnetostaticNodeObjects, KFMMagnetostaticLocalCoefficientSet> remover;
     fTree->ApplyCorecursiveAction(&remover);
 
     //the primacy flag inspector
-    KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> primacy_condition;
+    KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> primacy_condition;
     primacy_condition.SetFlagIndex(0);
     primacy_condition.SetFlagValue(1);
 
     //now we constuct the conditional actor
-    KFMConditionalActor<KFMElectrostaticNode> conditional_actor;
+    KFMConditionalActor<KFMMagnetostaticNode> conditional_actor;
     conditional_actor.SetInspectingActor(&primacy_condition);
     conditional_actor.SetOperationalActor(&localCoeffInitializer);
 
@@ -170,21 +170,21 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::InitializeLocalCoeff
 
     if (fVerbosity > 4) {
         kfmout
-            << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::InitializeLocalCoefficientsForPrimaryNodes: Done initializing local coefficient expansions."
+            << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::InitializeLocalCoefficientsForPrimaryNodes: Done initializing local coefficient expansions."
             << kfmendl;
     }
 }
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::Initialize()
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::Initialize()
 {
 
     if (fVerbosity > 4) {
         kfmout
-            << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::Initialize: Initializing the element multipole moment batch calculator. ";
+            << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::Initialize: Initializing the element multipole moment batch calculator. ";
     }
 
     fBatchCalc->SetDegree(fDegree);
-    fBatchCalc->SetElectrostaticElementContainer(fContainer);
+    fBatchCalc->SetMagnetostaticElementContainer(fContainer);
     fBatchCalc->Initialize();
 
     if (fVerbosity > 4) {
@@ -199,7 +199,7 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::Initialize()
 
     if (fVerbosity > 4) {
         kfmout
-            << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::Initialize: Initializing the multipole to multipole translator. ";
+            << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::Initialize: Initializing the multipole to multipole translator. ";
     }
 
     fM2MConverter->SetNumberOfTermsInSeries(fNTerms);
@@ -212,7 +212,7 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::Initialize()
 
     if (fVerbosity > 4) {
         kfmout
-            << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::Initialize: Initializing the multipole to local translator. ";
+            << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::Initialize: Initializing the multipole to local translator. ";
     }
 
     fM2LConverterInterface->SetLength(fWorldLength);
@@ -229,7 +229,7 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::Initialize()
 
     if (fVerbosity > 4) {
         kfmout
-            << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::Initialize: Initializing the local to local translator. ";
+            << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::Initialize: Initializing the local to local translator. ";
     }
 
     fL2LConverter->SetNumberOfTermsInSeries(fNTerms);
@@ -244,7 +244,7 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::Initialize()
 }
 
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::MapField()
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::MapField()
 {
     ResetMultipoleMoments();
     ResetLocalCoefficients();
@@ -252,7 +252,7 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::MapField()
     ComputeLocalCoefficients();
 }
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::AssociateElementsAndNodes()
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::AssociateElementsAndNodes()
 {
     fElementNodeAssociator->Clear();
     fTree->ApplyRecursiveAction(fElementNodeAssociator);
@@ -263,30 +263,30 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::AssociateElementsAnd
 
     if (fVerbosity > 4) {
         kfmout
-            << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::AssociateElementsAndNodes: Done making element to node association. For "
+            << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::AssociateElementsAndNodes: Done making element to node association. For "
             << fElementNodeAssociator->GetElementIDList()->size() << " elements." << kfmendl;
     }
 }
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ResetMultipoleMoments()
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ResetMultipoleMoments()
 {
     //reset all pre-existing multipole expansions
     fTree->ApplyCorecursiveAction(fMultipoleResetter);
 
     if (fVerbosity > 4) {
-        kfmout << "KFMElectrostaticTreeManager::ResetMultipoleMoments: Done reseting pre-exisiting multipole moments."
+        kfmout << "KFMMagnetostaticTreeManager::ResetMultipoleMoments: Done reseting pre-exisiting multipole moments."
                << kfmendl;
     }
 }
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeMultipoleMoments()
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ComputeMultipoleMoments()
 {
     //compute the individual multipole moments of each node due to owned electrodes
     fMultipoleDistributor->ProcessAndDistributeMoments();
 
     if (fVerbosity > 4) {
         kfmout
-            << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeMultipoleMoments: Done processing and distributing boundary element moments."
+            << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ComputeMultipoleMoments: Done processing and distributing boundary element moments."
             << kfmendl;
     }
 
@@ -295,23 +295,23 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeMultipoleMome
 
     if (fVerbosity > 4) {
         kfmout
-            << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeMultipoleMoments: Done performing the multipole to multipole (M2M) translations."
+            << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ComputeMultipoleMoments: Done performing the multipole to multipole (M2M) translations."
             << kfmendl;
     }
 }
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ResetLocalCoefficients()
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ResetLocalCoefficients()
 {
     //reset all existing local coefficient expansions to zero
     fTree->ApplyCorecursiveAction(fLocalCoeffResetter);
 
     if (fVerbosity > 4) {
-        kfmout << "KFMElectrostaticTreeManager::ResetLocalCoefficients: Done resetting local coefficients." << kfmendl;
+        kfmout << "KFMMagnetostaticTreeManager::ResetLocalCoefficients: Done resetting local coefficients." << kfmendl;
     }
 }
 
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeMultipoleToLocal()
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ComputeMultipoleToLocal()
 {
     //compute the local coefficients due to neighbors at the same tree level
     fM2LConverterInterface->Prepare();
@@ -323,33 +323,33 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeMultipoleToLo
 
     if (fVerbosity > 4) {
         kfmout
-            << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeLocalCoefficients: Done performing the multipole to local (M2L) translations."
+            << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ComputeLocalCoefficients: Done performing the multipole to local (M2L) translations."
             << kfmendl;
     }
 }
 
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeLocalToLocal()
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ComputeLocalToLocal()
 {
     //now form the downward distributions of the local coefficients
     fTree->ApplyRecursiveAction(fL2LConverter);
 
     if (fVerbosity > 4) {
         kfmout
-            << "KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeLocalCoefficients: Done performing the local to local (L2L) translations."
+            << "KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ComputeLocalCoefficients: Done performing the local to local (L2L) translations."
             << kfmendl;
     }
 }
 
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeLocalCoefficients()
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ComputeLocalCoefficients()
 {
     ComputeMultipoleToLocal();
     ComputeLocalToLocal();
 }
 
 
-void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::EvaluateWorkLoads(unsigned int divisions,
+void KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::EvaluateWorkLoads(unsigned int divisions,
                                                                               unsigned int zeromask)
 {
     //check if we have computed these parameters before
@@ -406,7 +406,7 @@ void KFMElectrostaticBoundaryIntegratorEngine_SingleThread::EvaluateWorkLoads(un
 }
 
 
-double KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeDiskMatrixVectorProductWeight()
+double KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ComputeDiskMatrixVectorProductWeight()
 {
     //evaluate the time for a matrix-like chuck of multiply-adds
     //read off of a disk
@@ -468,7 +468,7 @@ double KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeDiskMatrixV
     return weight;
 }
 
-double KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeRamMatrixVectorProductWeight()
+double KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ComputeRamMatrixVectorProductWeight()
 {
     //now we evaluate the time for a matrix like chuck of multiply-adds
     unsigned int n_samples = 100;
@@ -511,7 +511,7 @@ double KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeRamMatrixVe
     return weight;
 }
 
-double KFMElectrostaticBoundaryIntegratorEngine_SingleThread::ComputeFFTWeight(unsigned int divisions,
+double KFMMagnetostaticBoundaryIntegratorEngine_SingleThread::ComputeFFTWeight(unsigned int divisions,
                                                                                unsigned int zeromask)
 {
     unsigned int n_samples = 100;

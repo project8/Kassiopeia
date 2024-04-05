@@ -1,5 +1,5 @@
-#ifndef KFMElectrostaticMultipoleCalculatorBatch_HH__
-#define KFMElectrostaticMultipoleCalculatorBatch_HH__
+#ifndef KFMMagnetostaticMultipoleCalculatorBatch_HH__
+#define KFMMagnetostaticMultipoleCalculatorBatch_HH__
 
 //core
 #include "KFMBasisData.hh"
@@ -16,10 +16,10 @@
 #include "KFMPointCloud.hh"
 
 //electrostatics
-#include "KFMElectrostaticElementContainer.hh"
-#include "KFMElectrostaticMultipoleBatchCalculatorBase.hh"
-#include "KFMElectrostaticMultipoleCalculatorAnalytic.hh"
-#include "KFMElectrostaticMultipoleCalculatorNumeric.hh"
+#include "KFMMagnetostaticElementContainer.hh"
+#include "KFMMagnetostaticMultipoleBatchCalculatorBase.hh"
+#include "KFMMagnetostaticMultipoleCalculatorAnalytic.hh"
+#include "KFMMagnetostaticMultipoleCalculatorNumeric.hh"
 
 #include <sstream>
 
@@ -28,8 +28,8 @@ namespace KEMField
 
 /**
 *
-*@file KFMElectrostaticMultipoleBatchCalculator.hh
-*@class KFMElectrostaticMultipoleCalculatorBatch
+*@file KFMMagnetostaticMultipoleBatchCalculator.hh
+*@class KFMMagnetostaticMultipoleCalculatorBatch
 *@brief
 *@details
 *
@@ -39,11 +39,11 @@ namespace KEMField
 *
 */
 
-class KFMElectrostaticMultipoleBatchCalculator : public KFMElectrostaticMultipoleBatchCalculatorBase
+class KFMMagnetostaticMultipoleBatchCalculator : public KFMMagnetostaticMultipoleBatchCalculatorBase
 {
   public:
-    KFMElectrostaticMultipoleBatchCalculator();
-    ~KFMElectrostaticMultipoleBatchCalculator() override;
+    KFMMagnetostaticMultipoleBatchCalculator();
+    ~KFMMagnetostaticMultipoleBatchCalculator() override;
 
     //set the degree of the expansion
     void SetDegree(int l_max) override;
@@ -55,8 +55,8 @@ class KFMElectrostaticMultipoleBatchCalculator : public KFMElectrostaticMultipol
     void ComputeMoments() override;
 
   protected:
-    KFMElectrostaticMultipoleCalculatorAnalytic* fAnalyticCalc;
-    KFMElectrostaticMultipoleCalculatorNumeric* fNumericCalc;
+    KFMMagnetostaticMultipoleCalculatorAnalytic* fAnalyticCalc;
+    KFMMagnetostaticMultipoleCalculatorNumeric* fNumericCalc;
 
     double fTargetOrigin[3];
     KFMScalarMultipoleExpansion fTempExpansion;
@@ -68,4 +68,4 @@ class KFMElectrostaticMultipoleBatchCalculator : public KFMElectrostaticMultipol
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticMultipoleCalculatorBatch_H__ */
+#endif /* KFMMagnetostaticMultipoleCalculatorBatch_H__ */

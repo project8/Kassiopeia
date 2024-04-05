@@ -1,16 +1,16 @@
-#ifndef __KFMElectrostaticTreeBuilder_H__
-#define __KFMElectrostaticTreeBuilder_H__
+#ifndef __KFMMagnetostaticTreeBuilder_H__
+#define __KFMMagnetostaticTreeBuilder_H__
 
 
 #include "KFMCubicSpaceBallSorter.hh"
 #include "KFMCubicSpaceTree.hh"
 #include "KFMCubicSpaceTreeProperties.hh"
-#include "KFMElectrostaticElementContainer.hh"
-#include "KFMElectrostaticElementContainerBase.hh"
-#include "KFMElectrostaticNode.hh"
-#include "KFMElectrostaticParameters.hh"
-#include "KFMElectrostaticRegionSizeEstimator.hh"
-#include "KFMElectrostaticTree.hh"
+#include "KFMMagnetostaticElementContainer.hh"
+#include "KFMMagnetostaticElementContainerBase.hh"
+#include "KFMMagnetostaticNode.hh"
+#include "KFMMagnetostaticParameters.hh"
+#include "KFMMagnetostaticRegionSizeEstimator.hh"
+#include "KFMMagnetostaticTree.hh"
 #include "KFMInsertionCondition.hh"
 #include "KFMNodeObjectRemover.hh"
 #include "KFMObjectRetriever.hh"
@@ -25,8 +25,8 @@ namespace KEMField
 
 /**
 *
-*@file KFMElectrostaticTreeBuilder.hh
-*@class KFMElectrostaticTreeBuilder
+*@file KFMMagnetostaticTreeBuilder.hh
+*@class KFMMagnetostaticTreeBuilder
 *@brief class responsible for constructing the tree's 'skeleton' (nodes and their relations)
 *Does not compute moments or provide visitors to do this
 *@details
@@ -37,16 +37,16 @@ namespace KEMField
 */
 
 
-class KFMElectrostaticTreeBuilder
+class KFMMagnetostaticTreeBuilder
 {
   public:
-    KFMElectrostaticTreeBuilder()
+    KFMMagnetostaticTreeBuilder()
     {
         fSubdivisionCondition = nullptr;
         fSubdivisionConditionIsOwned = false;
     };
 
-    virtual ~KFMElectrostaticTreeBuilder()
+    virtual ~KFMMagnetostaticTreeBuilder()
     {
         if (fSubdivisionConditionIsOwned) {
             delete fSubdivisionCondition;
@@ -54,16 +54,16 @@ class KFMElectrostaticTreeBuilder
     };
 
     //extracted electrode data
-    void SetElectrostaticElementContainer(
-        KFMElectrostaticElementContainerBase<KFMELECTROSTATICS_DIM, KFMELECTROSTATICS_BASIS>* container);
-    KFMElectrostaticElementContainerBase<KFMELECTROSTATICS_DIM, KFMELECTROSTATICS_BASIS>*
-    GetElectrostaticElementContainer();
+    void SetMagnetostaticElementContainer(
+        KFMMagnetostaticElementContainerBase<KFMMAGNETOSTATICS_DIM, KFMMAGNETOSTATICS_BASIS>* container);
+    KFMMagnetostaticElementContainerBase<KFMMAGNETOSTATICS_DIM, KFMMAGNETOSTATICS_BASIS>*
+    GetMagnetostaticElementContainer();
 
     //access to the region tree, tree builder does not own the tree!
-    void SetTree(KFMElectrostaticTree* tree);
-    KFMElectrostaticTree* GetTree();
+    void SetTree(KFMMagnetostaticTree* tree);
+    KFMMagnetostaticTree* GetTree();
 
-    void SetSubdivisionCondition(KFMSubdivisionCondition<KFMELECTROSTATICS_DIM, KFMElectrostaticNodeObjects>* subdiv)
+    void SetSubdivisionCondition(KFMSubdivisionCondition<KFMMAGNETOSTATICS_DIM, KFMMagnetostaticNodeObjects>* subdiv)
     {
         if (subdiv != nullptr) {
             fSubdivisionCondition = subdiv;
@@ -99,18 +99,18 @@ class KFMElectrostaticTreeBuilder
     double fWorldLength;
 
     //the tree object that the manager is to construct
-    KFMElectrostaticTree* fTree;
+    KFMMagnetostaticTree* fTree;
 
     //subdivision condition
-    KFMSubdivisionCondition<KFMELECTROSTATICS_DIM, KFMElectrostaticNodeObjects>* fSubdivisionCondition;
+    KFMSubdivisionCondition<KFMMAGNETOSTATICS_DIM, KFMMagnetostaticNodeObjects>* fSubdivisionCondition;
     bool fSubdivisionConditionIsOwned;
 
     //manager does not own this object!
     //container to the eletrostatic elements
-    KFMElectrostaticElementContainerBase<KFMELECTROSTATICS_DIM, KFMELECTROSTATICS_BASIS>* fContainer;
+    KFMMagnetostaticElementContainerBase<KFMMAGNETOSTATICS_DIM, KFMMAGNETOSTATICS_BASIS>* fContainer;
 };
 
 
 }  // namespace KEMField
 
-#endif /* __KFMElectrostaticTreeBuilder_H__ */
+#endif /* __KFMMagnetostaticTreeBuilder_H__ */

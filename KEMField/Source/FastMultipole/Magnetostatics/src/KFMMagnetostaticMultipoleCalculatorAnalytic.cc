@@ -1,4 +1,4 @@
-#include "KFMElectrostaticMultipoleCalculatorAnalytic.hh"
+#include "KFMMagnetostaticMultipoleCalculatorAnalytic.hh"
 
 #include "KFMMessaging.hh"
 
@@ -7,9 +7,9 @@
 namespace KEMField
 {
 
-const double KFMElectrostaticMultipoleCalculatorAnalytic::fMinSinPolarAngle = 1e-3;
+const double KFMMagnetostaticMultipoleCalculatorAnalytic::fMinSinPolarAngle = 1e-3;
 
-KFMElectrostaticMultipoleCalculatorAnalytic::KFMElectrostaticMultipoleCalculatorAnalytic()
+KFMMagnetostaticMultipoleCalculatorAnalytic::KFMMagnetostaticMultipoleCalculatorAnalytic()
 {
     fJCalc = new KFMPinchonJMatrixCalculator();
     fRotator = new KFMComplexSphericalHarmonicExpansionRotator();
@@ -66,7 +66,7 @@ KFMElectrostaticMultipoleCalculatorAnalytic::KFMElectrostaticMultipoleCalculator
 }
 
 
-KFMElectrostaticMultipoleCalculatorAnalytic::~KFMElectrostaticMultipoleCalculatorAnalytic()
+KFMMagnetostaticMultipoleCalculatorAnalytic::~KFMMagnetostaticMultipoleCalculatorAnalytic()
 {
     fJCalc->DeallocateMatrices(&fJMatrix);
 
@@ -105,7 +105,7 @@ KFMElectrostaticMultipoleCalculatorAnalytic::~KFMElectrostaticMultipoleCalculato
 }
 
 
-void KFMElectrostaticMultipoleCalculatorAnalytic::SetDegree(int l_max)
+void KFMMagnetostaticMultipoleCalculatorAnalytic::SetDegree(int l_max)
 {
     fDegree = std::abs(l_max);
     fSize = (fDegree + 1) * (fDegree + 1);
@@ -124,7 +124,7 @@ void KFMElectrostaticMultipoleCalculatorAnalytic::SetDegree(int l_max)
     fRotator->SetDegree(fDegree);
     fRotator->SetJMatrices(&fJMatrix);
     if (!(fRotator->IsValid())) {
-        kfmout << "KFMElectrostaticMultipoleCalculatorAnalytic::SetDegree: Warning, multipole rotator is not valid! "
+        kfmout << "KFMMagnetostaticMultipoleCalculatorAnalytic::SetDegree: Warning, multipole rotator is not valid! "
                << std::endl;
     }
 
@@ -169,7 +169,7 @@ void KFMElectrostaticMultipoleCalculatorAnalytic::SetDegree(int l_max)
 }
 
 
-bool KFMElectrostaticMultipoleCalculatorAnalytic::ConstructExpansion(double* target_origin,
+bool KFMMagnetostaticMultipoleCalculatorAnalytic::ConstructExpansion(double* target_origin,
                                                                      const KFMPointCloud<3>* vertices,
                                                                      KFMScalarMultipoleExpansion* moments) const
 {
@@ -210,20 +210,20 @@ bool KFMElectrostaticMultipoleCalculatorAnalytic::ConstructExpansion(double* tar
         }
         else {
             kfmout
-                << "KFMElectrostaticMultipoleCalculatorAnalytic::ConstructExpansion: Warning, electrode type not recognized"
+                << "KFMMagnetostaticMultipoleCalculatorAnalytic::ConstructExpansion: Warning, electrode type not recognized"
                 << std::endl;
             return false;
         };
     }
     else {
         kfmout
-            << "KFMElectrostaticMultipoleCalculatorAnalytic::ConstructExpansion: Warning, Primitive ID is corrupt or electrode does not exist"
+            << "KFMMagnetostaticMultipoleCalculatorAnalytic::ConstructExpansion: Warning, Primitive ID is corrupt or electrode does not exist"
             << std::endl;
         return false;
     }
 }
 
-void KFMElectrostaticMultipoleCalculatorAnalytic::ComputeTriangleMomentsSlow(const double* target_origin,
+void KFMMagnetostaticMultipoleCalculatorAnalytic::ComputeTriangleMomentsSlow(const double* target_origin,
                                                                              const KFMPointCloud<3>* vertices,
                                                                              KFMScalarMultipoleExpansion* moments) const
 {
@@ -283,7 +283,7 @@ void KFMElectrostaticMultipoleCalculatorAnalytic::ComputeTriangleMomentsSlow(con
 }
 
 
-void KFMElectrostaticMultipoleCalculatorAnalytic::ComputeTriangleMoments(const double* target_origin,
+void KFMMagnetostaticMultipoleCalculatorAnalytic::ComputeTriangleMoments(const double* target_origin,
                                                                          const KFMPointCloud<3>* vertices,
                                                                          KFMScalarMultipoleExpansion* moments) const
 {
@@ -356,7 +356,7 @@ void KFMElectrostaticMultipoleCalculatorAnalytic::ComputeTriangleMoments(const d
     moments->SetMoments(&fMomentsA);
 }
 
-void KFMElectrostaticMultipoleCalculatorAnalytic::ComputeRectangleMoments(const double* target_origin,
+void KFMMagnetostaticMultipoleCalculatorAnalytic::ComputeRectangleMoments(const double* target_origin,
                                                                           const KFMPointCloud<3>* vertices,
                                                                           KFMScalarMultipoleExpansion* moments) const
 {
@@ -499,7 +499,7 @@ void KFMElectrostaticMultipoleCalculatorAnalytic::ComputeRectangleMoments(const 
     moments->SetMoments(&fMomentsA);
 }
 
-void KFMElectrostaticMultipoleCalculatorAnalytic::TranslateMomentsAlongZ(
+void KFMMagnetostaticMultipoleCalculatorAnalytic::TranslateMomentsAlongZ(
     std::vector<std::complex<double>>& source_moments, std::vector<std::complex<double>>& target_moments) const
 {
     //compute the array of powers of r
@@ -543,13 +543,13 @@ void KFMElectrostaticMultipoleCalculatorAnalytic::TranslateMomentsAlongZ(
 }
 
 
-void KFMElectrostaticMultipoleCalculatorAnalytic::ComputeSolidHarmonics(const double* del) const
+void KFMMagnetostaticMultipoleCalculatorAnalytic::ComputeSolidHarmonics(const double* del) const
 {
     KFMMath::RegularSolidHarmonic_Cart_Array(fDegree, del, fSolidHarmonics);
 }
 
 
-void KFMElectrostaticMultipoleCalculatorAnalytic::TranslateMoments(
+void KFMMagnetostaticMultipoleCalculatorAnalytic::TranslateMoments(
     const double* del, std::vector<std::complex<double>>& source_moments,
     std::vector<std::complex<double>>& target_moments) const
 {
@@ -620,7 +620,7 @@ void KFMElectrostaticMultipoleCalculatorAnalytic::TranslateMoments(
 //////////////////////////////////////////////////////////////////////////////
 
 
-void KFMElectrostaticMultipoleCalculatorAnalytic::TranslateMomentsFast(
+void KFMMagnetostaticMultipoleCalculatorAnalytic::TranslateMomentsFast(
     const double* del, std::vector<std::complex<double>>& source_moments,
     std::vector<std::complex<double>>& target_moments) const
 {
@@ -671,7 +671,7 @@ void KFMElectrostaticMultipoleCalculatorAnalytic::TranslateMomentsFast(
 }
 
 
-void KFMElectrostaticMultipoleCalculatorAnalytic::ComputeTriangleMomentAnalyticTerms(
+void KFMMagnetostaticMultipoleCalculatorAnalytic::ComputeTriangleMomentAnalyticTerms(
     double area, double dist, double lower_angle, double upper_angle, std::vector<std::complex<double>>* moments) const
 {
     //    KFMMath::I_cheb1_array(fDegree, lower_angle, upper_angle, fCheb1Arr); //real
@@ -699,7 +699,7 @@ void KFMElectrostaticMultipoleCalculatorAnalytic::ComputeTriangleMomentAnalyticT
 }
 
 
-void KFMElectrostaticMultipoleCalculatorAnalytic::ComputeWireMoments(const double* target_origin,
+void KFMMagnetostaticMultipoleCalculatorAnalytic::ComputeWireMoments(const double* target_origin,
                                                                      const KFMPointCloud<3>* vertices,
                                                                      KFMScalarMultipoleExpansion* moments) const
 {

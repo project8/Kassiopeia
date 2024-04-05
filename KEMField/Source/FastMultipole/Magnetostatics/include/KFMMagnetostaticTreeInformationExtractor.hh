@@ -1,8 +1,8 @@
-#ifndef KFMElectrostaticTreeInformationExtractor_HH__
-#define KFMElectrostaticTreeInformationExtractor_HH__
+#ifndef KFMMagnetostaticTreeInformationExtractor_HH__
+#define KFMMagnetostaticTreeInformationExtractor_HH__
 
-#include "KFMElectrostaticNode.hh"
-#include "KFMElectrostaticTree.hh"
+#include "KFMMagnetostaticNode.hh"
+#include "KFMMagnetostaticTree.hh"
 #include "KFMNodeActor.hh"
 #include "KFMNodeFlagValueInspector.hh"
 
@@ -13,8 +13,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticTreeInformationExtractor.hh
-*@class KFMElectrostaticTreeInformationExtractor
+*@file KFMMagnetostaticTreeInformationExtractor.hh
+*@class KFMMagnetostaticTreeInformationExtractor
 *@brief
 *@details
 *
@@ -24,10 +24,10 @@ namespace KEMField
 *
 */
 
-class KFMElectrostaticTreeInformationExtractor : public KFMNodeActor<KFMElectrostaticNode>
+class KFMMagnetostaticTreeInformationExtractor : public KFMNodeActor<KFMMagnetostaticNode>
 {
   public:
-    KFMElectrostaticTreeInformationExtractor()
+    KFMMagnetostaticTreeInformationExtractor()
     {
         fInitialized = false;
         fMaxDepth = 0;
@@ -42,7 +42,7 @@ class KFMElectrostaticTreeInformationExtractor : public KFMNodeActor<KFMElectros
         fLocalCoeffFlagCondition.SetFlagValue(1);
     };
 
-    ~KFMElectrostaticTreeInformationExtractor() override = default;
+    ~KFMMagnetostaticTreeInformationExtractor() override = default;
     ;
 
     void SetDegree(unsigned int degree)
@@ -50,11 +50,11 @@ class KFMElectrostaticTreeInformationExtractor : public KFMNodeActor<KFMElectros
         fDegree = degree;
     };
 
-    void ApplyAction(KFMElectrostaticNode* node) override
+    void ApplyAction(KFMMagnetostaticNode* node) override
     {
         if (!fInitialized) {
             KFMCubicSpaceTreeProperties<3>* prop =
-                KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCubicSpaceTreeProperties<3>>::GetNodeObject(node);
+                KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCubicSpaceTreeProperties<3>>::GetNodeObject(node);
 
             fZeroMaskSize = prop->GetCubicNeighborOrder();
             fMaxDepth = prop->GetMaxTreeDepth();
@@ -90,21 +90,21 @@ class KFMElectrostaticTreeInformationExtractor : public KFMNodeActor<KFMElectros
             fNNodes++;
 
             fNodeMem +=
-                sizeof(KFMElectrostaticNode) + sizeof(electrostatic_node_flags) + sizeof(three_dimensional_cube);
+                sizeof(KFMMagnetostaticNode) + sizeof(electrostatic_node_flags) + sizeof(three_dimensional_cube);
 
             int level = node->GetLevel();
 
             fNLevelNodes[level] += 1;
 
             double length =
-                KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCube<3>>::GetNodeObject(node)->GetLength();
+                KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCube<3>>::GetNodeObject(node)->GetLength();
 
             fLevelNodeSize[level] = length;
 
             if (node->GetID() == 0)  //root node
             {
                 KFMCube<3>* world_cube =
-                    KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCube<3>>::GetNodeObject(node);
+                    KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCube<3>>::GetNodeObject(node);
 
                 fWorldCenter = world_cube->GetCenter();
                 fWorldLength = world_cube->GetLength();
@@ -121,7 +121,7 @@ class KFMElectrostaticTreeInformationExtractor : public KFMNodeActor<KFMElectros
             }
 
             KFMIdentitySet* id_set =
-                KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMIdentitySet>::GetNodeObject(node);
+                KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMIdentitySet>::GetNodeObject(node);
             if (id_set != nullptr) {
                 fIDSetMem += (id_set->GetSize()) * sizeof(unsigned int);
                 fNLevelElements[level] += id_set->GetSize();
@@ -129,17 +129,17 @@ class KFMElectrostaticTreeInformationExtractor : public KFMNodeActor<KFMElectros
             }
 
             KFMCollocationPointIdentitySet* coll_id_set =
-                KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCollocationPointIdentitySet>::GetNodeObject(node);
+                KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCollocationPointIdentitySet>::GetNodeObject(node);
             if (coll_id_set != nullptr) {
                 fIDSetMem += (coll_id_set->GetSize()) * sizeof(unsigned int);
             }
 
             KFMIdentitySetList* id_set_list =
-                KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMIdentitySetList>::GetNodeObject(node);
+                KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMIdentitySetList>::GetNodeObject(node);
             if (id_set_list != nullptr) {
                 if (node->GetParent() != nullptr) {
                     KFMIdentitySetList* parent_id_set_list =
-                        KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMIdentitySetList>::GetNodeObject(
+                        KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMIdentitySetList>::GetNodeObject(
                             node->GetParent());
                     if (id_set_list != parent_id_set_list) {
                         //std::cout<<"n sets = "<<id_set_list->GetNumberOfSets()<<std::endl;
@@ -243,20 +243,20 @@ class KFMElectrostaticTreeInformationExtractor : public KFMNodeActor<KFMElectros
     double fNodeMem;
     double fExternalIDSetMem;
 
-    std::vector<KFMElectrostaticNode*> fNodeList;
-    std::vector<KFMElectrostaticNode*> fNodeNeighborList;
+    std::vector<KFMMagnetostaticNode*> fNodeList;
+    std::vector<KFMMagnetostaticNode*> fNodeNeighborList;
 
     //condition for a node to have a multipole/local coeff expansion
-    KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> fMultipoleFlagCondition;
-    KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> fLocalCoeffFlagCondition;
+    KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> fMultipoleFlagCondition;
+    KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> fLocalCoeffFlagCondition;
 
     //count number of direct calls in this node
-    unsigned int CountDirectCalls(KFMElectrostaticNode* node)
+    unsigned int CountDirectCalls(KFMMagnetostaticNode* node)
     {
         unsigned int count = 0;
         unsigned int level_count = 0;
 
-        KFMElectrostaticNode* temp_node;
+        KFMMagnetostaticNode* temp_node;
         if (!(node->HasChildren())) {
 
             temp_node = node;
@@ -272,15 +272,15 @@ class KFMElectrostaticTreeInformationExtractor : public KFMNodeActor<KFMElectros
 
             for (unsigned int i = 0; i < fNodeList.size(); i++) {
                 level_count = 0;
-                KFMCubicSpaceNodeNeighborFinder<3, KFMElectrostaticNodeObjects>::GetAllNeighbors(fNodeList[i],
+                KFMCubicSpaceNodeNeighborFinder<3, KFMMagnetostaticNodeObjects>::GetAllNeighbors(fNodeList[i],
                                                                                                  fZeroMaskSize,
                                                                                                  &fNodeNeighborList);
                 for (auto& j : fNodeNeighborList) {
                     if (j != nullptr) {
-                        if (KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMIdentitySet>::GetNodeObject(j) !=
+                        if (KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMIdentitySet>::GetNodeObject(j) !=
                             nullptr) {
                             level_count +=
-                                KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMIdentitySet>::GetNodeObject(j)
+                                KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMIdentitySet>::GetNodeObject(j)
                                     ->GetSize();
                         }
                     }
@@ -298,4 +298,4 @@ class KFMElectrostaticTreeInformationExtractor : public KFMNodeActor<KFMElectros
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticTreeInformationExtractor_H__ */
+#endif /* KFMMagnetostaticTreeInformationExtractor_H__ */

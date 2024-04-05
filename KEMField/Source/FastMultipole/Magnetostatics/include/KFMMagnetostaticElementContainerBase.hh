@@ -1,9 +1,9 @@
-#ifndef KFMElectrostaticElementContainerBase_HH__
-#define KFMElectrostaticElementContainerBase_HH__
+#ifndef KFMMagnetostaticElementContainerBase_HH__
+#define KFMMagnetostaticElementContainerBase_HH__
 
 #include "KFMBall.hh"
 #include "KFMBasisData.hh"
-#include "KFMElectrostaticElement.hh"
+#include "KFMMagnetostaticElement.hh"
 #include "KFMObjectContainer.hh"
 #include "KFMPointCloud.hh"
 
@@ -12,8 +12,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticElementContainerBase.hh
-*@class KFMElectrostaticElementContainerBase
+*@file KFMMagnetostaticElementContainerBase.hh
+*@class KFMMagnetostaticElementContainerBase
 *@brief
 *@details
 *
@@ -23,22 +23,22 @@ namespace KEMField
 *
 */
 
-template<unsigned int SpatialDimension, unsigned int BasisDimension> class KFMElectrostaticElementContainerBase
+template<unsigned int SpatialDimension, unsigned int BasisDimension> class KFMMagnetostaticElementContainerBase
 {
   public:
-    KFMElectrostaticElementContainerBase()
+    KFMMagnetostaticElementContainerBase()
     {
         ;
     };
-    virtual ~KFMElectrostaticElementContainerBase()
+    virtual ~KFMMagnetostaticElementContainerBase()
     {
         ;
     };
 
     virtual unsigned int GetNElements() const = 0;
 
-    virtual void AddElectrostaticElement(const KFMElectrostaticElement<SpatialDimension, BasisDimension>& elem) = 0;
-    virtual KFMElectrostaticElement<SpatialDimension, BasisDimension> GetElectrostaticElement(unsigned int id) = 0;
+    virtual void AddMagnetostaticElement(const KFMMagnetostaticElement<SpatialDimension, BasisDimension>& elem) = 0;
+    virtual KFMMagnetostaticElement<SpatialDimension, BasisDimension> GetMagnetostaticElement(unsigned int id) = 0;
 
     virtual KFMPointCloud<SpatialDimension>* GetPointCloud(unsigned int id) = 0;
     virtual KFMBall<SpatialDimension>* GetBoundingBall(unsigned int id) = 0;
@@ -75,4 +75,4 @@ template<unsigned int SpatialDimension, unsigned int BasisDimension> class KFMEl
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticElementContainerBase_H__ */
+#endif /* KFMMagnetostaticElementContainerBase_H__ */

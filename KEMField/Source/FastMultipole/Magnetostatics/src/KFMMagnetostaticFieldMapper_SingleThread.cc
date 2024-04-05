@@ -1,6 +1,6 @@
-#include "KFMElectrostaticFieldMapper_SingleThread.hh"
+#include "KFMMagnetostaticFieldMapper_SingleThread.hh"
 
-#include "KFMElectrostaticMultipoleBatchCalculator.hh"
+#include "KFMMagnetostaticMultipoleBatchCalculator.hh"
 #include "KFMEmptyIdentitySetRemover.hh"
 #include "KFMLeafConditionActor.hh"
 #include "KFMNodeFlagValueInspector.hh"
@@ -8,7 +8,7 @@
 namespace KEMField
 {
 
-KFMElectrostaticFieldMapper_SingleThread::KFMElectrostaticFieldMapper_SingleThread()
+KFMMagnetostaticFieldMapper_SingleThread::KFMMagnetostaticFieldMapper_SingleThread()
 {
     fTree = nullptr;
     fContainer = nullptr;
@@ -20,23 +20,23 @@ KFMElectrostaticFieldMapper_SingleThread::KFMElectrostaticFieldMapper_SingleThre
     fMaximumTreeDepth = 0;
     fVerbosity = 0;
 
-    fBatchCalc = new KFMElectrostaticMultipoleBatchCalculator();
-    fMultipoleDistributor = new KFMElectrostaticElementMultipoleDistributor();
+    fBatchCalc = new KFMMagnetostaticMultipoleBatchCalculator();
+    fMultipoleDistributor = new KFMMagnetostaticElementMultipoleDistributor();
     fMultipoleDistributor->SetBatchCalculator(fBatchCalc);
-    fElementNodeAssociator = new KFMElectrostaticElementNodeAssociator();
+    fElementNodeAssociator = new KFMMagnetostaticElementNodeAssociator();
 
-    fLocalCoeffInitializer = new KFMElectrostaticLocalCoefficientInitializer();
-    fMultipoleInitializer = new KFMElectrostaticMultipoleInitializer();
+    fLocalCoeffInitializer = new KFMMagnetostaticLocalCoefficientInitializer();
+    fMultipoleInitializer = new KFMMagnetostaticMultipoleInitializer();
 
-    fM2MConverter = new KFMElectrostaticRemoteToRemoteConverter();
+    fM2MConverter = new KFMMagnetostaticRemoteToRemoteConverter();
 
-    //fM2LConverter = new KFMElectrostaticRemoteToLocalConverter();
-    fM2LConverterInterface = new KFMElectrostaticRemoteToLocalConverterInterface();
+    //fM2LConverter = new KFMMagnetostaticRemoteToLocalConverter();
+    fM2LConverterInterface = new KFMMagnetostaticRemoteToLocalConverterInterface();
 
-    fL2LConverter = new KFMElectrostaticLocalToLocalConverter();
+    fL2LConverter = new KFMMagnetostaticLocalToLocalConverter();
 }
 
-KFMElectrostaticFieldMapper_SingleThread::~KFMElectrostaticFieldMapper_SingleThread()
+KFMMagnetostaticFieldMapper_SingleThread::~KFMMagnetostaticFieldMapper_SingleThread()
 {
     delete fBatchCalc;
     delete fMultipoleDistributor;
@@ -51,18 +51,18 @@ KFMElectrostaticFieldMapper_SingleThread::~KFMElectrostaticFieldMapper_SingleThr
     delete fL2LConverter;
 }
 
-void KFMElectrostaticFieldMapper_SingleThread::SetTree(KFMElectrostaticTree* tree)
+void KFMMagnetostaticFieldMapper_SingleThread::SetTree(KFMMagnetostaticTree* tree)
 {
     fTree = tree;
     SetParameters(tree->GetParameters());
-    KFMCube<KFMELECTROSTATICS_DIM>* world_cube;
-    world_cube = KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCube<KFMELECTROSTATICS_DIM>>::GetNodeObject(
+    KFMCube<KFMMAGNETOSTATICS_DIM>* world_cube;
+    world_cube = KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCube<KFMMAGNETOSTATICS_DIM>>::GetNodeObject(
         tree->GetRootNode());
     fWorldLength = world_cube->GetLength();
 }
 
 //set parameters
-void KFMElectrostaticFieldMapper_SingleThread::SetParameters(const KFMElectrostaticParameters& params)
+void KFMMagnetostaticFieldMapper_SingleThread::SetParameters(const KFMMagnetostaticParameters& params)
 {
     fDegree = params.degree;
     fNTerms = (fDegree + 1) * (fDegree + 1);
@@ -74,29 +74,29 @@ void KFMElectrostaticFieldMapper_SingleThread::SetParameters(const KFMElectrosta
 
     if (fVerbosity > 2) {
         //print the parameters
-        kfmout << "KFMElectrostaticFieldMapper_SingleThread::SetParameters: top level divisions set to "
+        kfmout << "KFMMagnetostaticFieldMapper_SingleThread::SetParameters: top level divisions set to "
                << params.top_level_divisions << kfmendl;
-        kfmout << "KFMElectrostaticFieldMapper_SingleThread::SetParameters: divisions set to " << params.divisions
+        kfmout << "KFMMagnetostaticFieldMapper_SingleThread::SetParameters: divisions set to " << params.divisions
                << kfmendl;
-        kfmout << "KFMElectrostaticFieldMapper_SingleThread::SetParameters: degree set to " << params.degree << kfmendl;
-        kfmout << "KFMElectrostaticFieldMapper_SingleThread::SetParameters: zero mask size set to " << params.zeromask
+        kfmout << "KFMMagnetostaticFieldMapper_SingleThread::SetParameters: degree set to " << params.degree << kfmendl;
+        kfmout << "KFMMagnetostaticFieldMapper_SingleThread::SetParameters: zero mask size set to " << params.zeromask
                << kfmendl;
-        kfmout << "KFMElectrostaticFieldMapper_SingleThread::SetParameters: max tree depth set to "
+        kfmout << "KFMMagnetostaticFieldMapper_SingleThread::SetParameters: max tree depth set to "
                << params.maximum_tree_depth << kfmendl;
     }
 }
 
 
-void KFMElectrostaticFieldMapper_SingleThread::Initialize()
+void KFMMagnetostaticFieldMapper_SingleThread::Initialize()
 {
 
     if (fVerbosity > 2) {
         kfmout
-            << "KFMElectrostaticFieldMapper_SingleThread::Initialize: Initializing the element multipole moment batch calculator. ";
+            << "KFMMagnetostaticFieldMapper_SingleThread::Initialize: Initializing the element multipole moment batch calculator. ";
     }
 
     fBatchCalc->SetDegree(fDegree);
-    fBatchCalc->SetElectrostaticElementContainer(fContainer);
+    fBatchCalc->SetMagnetostaticElementContainer(fContainer);
     fBatchCalc->Initialize();
 
     if (fVerbosity > 2) {
@@ -108,7 +108,7 @@ void KFMElectrostaticFieldMapper_SingleThread::Initialize()
 
     if (fVerbosity > 2) {
         kfmout
-            << "KFMElectrostaticFieldMapper_SingleThread::Initialize: Initializing the multipole to multipole translator. ";
+            << "KFMMagnetostaticFieldMapper_SingleThread::Initialize: Initializing the multipole to multipole translator. ";
     }
 
     fM2MConverter->SetNumberOfTermsInSeries(fNTerms);
@@ -121,7 +121,7 @@ void KFMElectrostaticFieldMapper_SingleThread::Initialize()
 
     if (fVerbosity > 2) {
         kfmout
-            << "KFMElectrostaticFieldMapper_SingleThread::Initialize: Initializing the multipole to local translator. ";
+            << "KFMMagnetostaticFieldMapper_SingleThread::Initialize: Initializing the multipole to local translator. ";
     }
 
     //    fM2LConverter->SetLength(fWorldLength);
@@ -144,7 +144,7 @@ void KFMElectrostaticFieldMapper_SingleThread::Initialize()
     }
 
     if (fVerbosity > 2) {
-        kfmout << "KFMElectrostaticFieldMapper_SingleThread::Initialize: Initializing the local to local translator. ";
+        kfmout << "KFMMagnetostaticFieldMapper_SingleThread::Initialize: Initializing the local to local translator. ";
     }
 
     fL2LConverter->SetNumberOfTermsInSeries(fNTerms);
@@ -157,7 +157,7 @@ void KFMElectrostaticFieldMapper_SingleThread::Initialize()
 }
 
 
-void KFMElectrostaticFieldMapper_SingleThread::MapField()
+void KFMMagnetostaticFieldMapper_SingleThread::MapField()
 {
     AssociateElementsAndNodes();
     InitializeMultipoleMoments();
@@ -167,7 +167,7 @@ void KFMElectrostaticFieldMapper_SingleThread::MapField()
     CleanUp();
 }
 
-void KFMElectrostaticFieldMapper_SingleThread::AssociateElementsAndNodes()
+void KFMMagnetostaticFieldMapper_SingleThread::AssociateElementsAndNodes()
 {
     fElementNodeAssociator->Clear();
     fTree->ApplyRecursiveAction(fElementNodeAssociator);
@@ -178,24 +178,24 @@ void KFMElectrostaticFieldMapper_SingleThread::AssociateElementsAndNodes()
 
     if (fVerbosity > 2) {
         kfmout
-            << "KFMElectrostaticFieldMapper_SingleThread::AssociateElementsAndNodes: Done making element to node association. "
+            << "KFMMagnetostaticFieldMapper_SingleThread::AssociateElementsAndNodes: Done making element to node association. "
             << kfmendl;
     }
 }
 
-void KFMElectrostaticFieldMapper_SingleThread::InitializeMultipoleMoments()
+void KFMMagnetostaticFieldMapper_SingleThread::InitializeMultipoleMoments()
 {
     //remove any pre-existing multipole expansions
-    KFMNodeObjectRemover<KFMElectrostaticNodeObjects, KFMElectrostaticMultipoleSet> remover;
+    KFMNodeObjectRemover<KFMMagnetostaticNodeObjects, KFMMagnetostaticMultipoleSet> remover;
     fTree->ApplyCorecursiveAction(&remover);
 
     //condition for a node to have a multipole expansion is based on the non-zero multipole moment flag
-    KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> multipole_flag_condition;
+    KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> multipole_flag_condition;
     multipole_flag_condition.SetFlagIndex(1);
     multipole_flag_condition.SetFlagValue(1);
 
     //now we constuct the conditional actor
-    KFMConditionalActor<KFMElectrostaticNode> conditional_actor;
+    KFMConditionalActor<KFMMagnetostaticNode> conditional_actor;
 
     conditional_actor.SetInspectingActor(&multipole_flag_condition);
     conditional_actor.SetOperationalActor(fMultipoleInitializer);
@@ -204,14 +204,14 @@ void KFMElectrostaticFieldMapper_SingleThread::InitializeMultipoleMoments()
     fTree->ApplyRecursiveAction(&conditional_actor);
 }
 
-void KFMElectrostaticFieldMapper_SingleThread::ComputeMultipoleMoments()
+void KFMMagnetostaticFieldMapper_SingleThread::ComputeMultipoleMoments()
 {
     //compute the individual multipole moments of each node due to owned electrodes
     fMultipoleDistributor->ProcessAndDistributeMoments();
 
     if (fVerbosity > 2) {
         kfmout
-            << "KFMElectrostaticFieldMapper_SingleThread::ComputeMultipoleMoments: Done processing and distributing boundary element moments."
+            << "KFMMagnetostaticFieldMapper_SingleThread::ComputeMultipoleMoments: Done processing and distributing boundary element moments."
             << kfmendl;
     }
 
@@ -220,16 +220,16 @@ void KFMElectrostaticFieldMapper_SingleThread::ComputeMultipoleMoments()
 
     if (fVerbosity > 2) {
         kfmout
-            << "KFMElectrostaticFieldMapper_SingleThread::ComputeMultipoleMoments: Done performing the multipole to multipole (M2M) translations."
+            << "KFMMagnetostaticFieldMapper_SingleThread::ComputeMultipoleMoments: Done performing the multipole to multipole (M2M) translations."
             << kfmendl;
     }
 }
 
 
-void KFMElectrostaticFieldMapper_SingleThread::InitializeLocalCoefficients()  //full initialization for all nodes
+void KFMMagnetostaticFieldMapper_SingleThread::InitializeLocalCoefficients()  //full initialization for all nodes
 {
     //delete all pre-existing local coefficient expansions
-    KFMNodeObjectRemover<KFMElectrostaticNodeObjects, KFMElectrostaticLocalCoefficientSet> remover;
+    KFMNodeObjectRemover<KFMMagnetostaticNodeObjects, KFMMagnetostaticLocalCoefficientSet> remover;
     fTree->ApplyCorecursiveAction(&remover);
 
     //initialize all of local coefficient expansions for every node
@@ -237,12 +237,12 @@ void KFMElectrostaticFieldMapper_SingleThread::InitializeLocalCoefficients()  //
 
     if (fVerbosity > 2) {
         kfmout
-            << "KFMElectrostaticFieldMapper_SingleThread::InitializeLocalCoefficients: Done initializing local coefficient expansions."
+            << "KFMMagnetostaticFieldMapper_SingleThread::InitializeLocalCoefficients: Done initializing local coefficient expansions."
             << kfmendl;
     }
 }
 
-void KFMElectrostaticFieldMapper_SingleThread::ComputeLocalCoefficients()
+void KFMMagnetostaticFieldMapper_SingleThread::ComputeLocalCoefficients()
 {
     //    //compute the local coefficients due to neighbors at the same tree level
     //    fM2LConverter->Prepare(fTree);
@@ -262,7 +262,7 @@ void KFMElectrostaticFieldMapper_SingleThread::ComputeLocalCoefficients()
 
     if (fVerbosity > 2) {
         kfmout
-            << "KFMElectrostaticFieldMapper_SingleThread::ComputeLocalCoefficients: Done performing the multipole to local (M2L) translations."
+            << "KFMMagnetostaticFieldMapper_SingleThread::ComputeLocalCoefficients: Done performing the multipole to local (M2L) translations."
             << kfmendl;
     }
 
@@ -271,34 +271,34 @@ void KFMElectrostaticFieldMapper_SingleThread::ComputeLocalCoefficients()
 
     if (fVerbosity > 2) {
         kfmout
-            << "KFMElectrostaticFieldMapper_SingleThread::ComputeLocalCoefficients: Done performing the local to local (L2L) translations."
+            << "KFMMagnetostaticFieldMapper_SingleThread::ComputeLocalCoefficients: Done performing the local to local (L2L) translations."
             << kfmendl;
     }
 }
 
-void KFMElectrostaticFieldMapper_SingleThread::CleanUp()
+void KFMMagnetostaticFieldMapper_SingleThread::CleanUp()
 {
     //reset the node's ptr to the element container to null, since we will delete it
-    KFMNodeObjectNullifier<KFMElectrostaticNodeObjects, KFMElectrostaticElementContainerBase<3, 1>>
+    KFMNodeObjectNullifier<KFMMagnetostaticNodeObjects, KFMMagnetostaticElementContainerBase<3, 1>>
         elementContainerNullifier;
     fTree->ApplyCorecursiveAction(&elementContainerNullifier);
 
     //now we can clean up the node objects
     //remove empty id and external id sets
-    KFMEmptyIdentitySetRemover<KFMElectrostaticNodeObjects> empty_id_remover;
+    KFMEmptyIdentitySetRemover<KFMMagnetostaticNodeObjects> empty_id_remover;
     fTree->ApplyCorecursiveAction(&empty_id_remover);
 
     //remove non-leaf local coefficients (not needed)
-    KFMNodeObjectRemover<KFMElectrostaticNodeObjects, KFMElectrostaticLocalCoefficientSet> lc_remover;
-    KFMLeafConditionActor<KFMElectrostaticNode> leaf_condition;
+    KFMNodeObjectRemover<KFMMagnetostaticNodeObjects, KFMMagnetostaticLocalCoefficientSet> lc_remover;
+    KFMLeafConditionActor<KFMMagnetostaticNode> leaf_condition;
     leaf_condition.SetFalseOnLeafNodes();
-    KFMConditionalActor<KFMElectrostaticNode> conditional_lc_remover;
+    KFMConditionalActor<KFMMagnetostaticNode> conditional_lc_remover;
     conditional_lc_remover.SetInspectingActor(&leaf_condition);
     conditional_lc_remover.SetOperationalActor(&lc_remover);
     fTree->ApplyRecursiveAction(&conditional_lc_remover);
 
     //remove multipole moments (not needed)
-    KFMNodeObjectRemover<KFMElectrostaticNodeObjects, KFMElectrostaticMultipoleSet> remover;
+    KFMNodeObjectRemover<KFMMagnetostaticNodeObjects, KFMMagnetostaticMultipoleSet> remover;
     fTree->ApplyCorecursiveAction(&remover);
 }
 

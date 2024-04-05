@@ -1,5 +1,5 @@
-#ifndef KFMElectrostaticMultipoleCalculator_HH__
-#define KFMElectrostaticMultipoleCalculator_HH__
+#ifndef KFMMagnetostaticMultipoleCalculator_HH__
+#define KFMMagnetostaticMultipoleCalculator_HH__
 
 
 #include "KFMMath.hh"
@@ -17,8 +17,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticMultipoleCalculator.hh
-*@class KFMElectrostaticMultipoleCalculator
+*@file KFMMagnetostaticMultipoleCalculator.hh
+*@class KFMMagnetostaticMultipoleCalculator
 *@brief abstract base class
 *@details
 *
@@ -28,12 +28,12 @@ namespace KEMField
 *
 */
 
-class KFMElectrostaticMultipoleCalculator
+class KFMMagnetostaticMultipoleCalculator
 {
   public:
-    KFMElectrostaticMultipoleCalculator() = default;
+    KFMMagnetostaticMultipoleCalculator() = default;
     ;
-    virtual ~KFMElectrostaticMultipoleCalculator() = default;
+    virtual ~KFMMagnetostaticMultipoleCalculator() = default;
     ;
 
     virtual void SetDegree(int l_max) = 0;
@@ -53,4 +53,4 @@ class KFMElectrostaticMultipoleCalculator
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticMultipoleCalculator_H__ */
+#endif /* KFMMagnetostaticMultipoleCalculator_H__ */

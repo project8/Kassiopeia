@@ -1,8 +1,8 @@
-#ifndef KFMElectrostaticLocalCoefficientFieldCalculator_HH__
-#define KFMElectrostaticLocalCoefficientFieldCalculator_HH__
+#ifndef KFMMagnetostaticLocalCoefficientFieldCalculator_HH__
+#define KFMMagnetostaticLocalCoefficientFieldCalculator_HH__
 
 #include "KFMComplexSphericalHarmonicExpansionRotator.hh"
-#include "KFMElectrostaticLocalCoefficientSet.hh"
+#include "KFMMagnetostaticLocalCoefficientSet.hh"
 #include "KFMLinearAlgebraDefinitions.hh"
 #include "KFMPinchonJMatrixCalculator.hh"
 
@@ -11,8 +11,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticLocalCoefficientFieldCalculator.hh
-*@class KFMElectrostaticLocalCoefficientFieldCalculator
+*@file KFMMagnetostaticLocalCoefficientFieldCalculator.hh
+*@class KFMMagnetostaticLocalCoefficientFieldCalculator
 *@brief
 *@details
 *
@@ -22,11 +22,11 @@ namespace KEMField
 *
 */
 
-class KFMElectrostaticLocalCoefficientFieldCalculator
+class KFMMagnetostaticLocalCoefficientFieldCalculator
 {
   public:
-    KFMElectrostaticLocalCoefficientFieldCalculator();
-    virtual ~KFMElectrostaticLocalCoefficientFieldCalculator();
+    KFMMagnetostaticLocalCoefficientFieldCalculator();
+    virtual ~KFMMagnetostaticLocalCoefficientFieldCalculator();
 
     void SetDegree(int degree);
     void SetExpansionOrigin(const double* origin);
@@ -35,7 +35,7 @@ class KFMElectrostaticLocalCoefficientFieldCalculator
         fExpansionRadius = er;
     };
 
-    void SetLocalCoefficients(const KFMElectrostaticLocalCoefficientSet* set);
+    void SetLocalCoefficients(const KFMMagnetostaticLocalCoefficientSet* set);
     void SetRealMoments(const double* real_mom);
     void SetImaginaryMoments(const double* imag_mom);
 
@@ -74,7 +74,7 @@ class KFMElectrostaticLocalCoefficientFieldCalculator
     mutable kfm_vector* fSphField;
     mutable kfm_vector* fCartField;
 
-    const KFMElectrostaticLocalCoefficientSet* fLocalCoeff;
+    const KFMMagnetostaticLocalCoefficientSet* fLocalCoeff;
     const double* fRealMoments;
     const double* fImagMoments;
 
@@ -102,4 +102,4 @@ class KFMElectrostaticLocalCoefficientFieldCalculator
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticLocalCoefficientFieldCalculator_H__ */
+#endif /* KFMMagnetostaticLocalCoefficientFieldCalculator_H__ */

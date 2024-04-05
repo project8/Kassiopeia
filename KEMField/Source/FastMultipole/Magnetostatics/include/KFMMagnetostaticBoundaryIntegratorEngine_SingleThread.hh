@@ -1,11 +1,11 @@
-#ifndef __KFMElectrostaticBoundaryIntegratorEngine_SingleThread_H__
-#define __KFMElectrostaticBoundaryIntegratorEngine_SingleThread_H__
+#ifndef __KFMMagnetostaticBoundaryIntegratorEngine_SingleThread_H__
+#define __KFMMagnetostaticBoundaryIntegratorEngine_SingleThread_H__
 
-#include "KFMElectrostaticElementContainer.hh"
-#include "KFMElectrostaticMultipoleBatchCalculatorBase.hh"
-#include "KFMElectrostaticNode.hh"
-#include "KFMElectrostaticParameters.hh"
-#include "KFMElectrostaticTree.hh"
+#include "KFMMagnetostaticElementContainer.hh"
+#include "KFMMagnetostaticMultipoleBatchCalculatorBase.hh"
+#include "KFMMagnetostaticNode.hh"
+#include "KFMMagnetostaticParameters.hh"
+#include "KFMMagnetostaticTree.hh"
 #include "KFMNodeObjectRemover.hh"
 #include "KFMObjectRetriever.hh"
 
@@ -14,8 +14,8 @@ namespace KEMField
 
 /**
 *
-*@file KFMElectrostaticBoundaryIntegratorEngine_SingleThread.hh
-*@class KFMElectrostaticBoundaryIntegratorEngine_SingleThread
+*@file KFMMagnetostaticBoundaryIntegratorEngine_SingleThread.hh
+*@class KFMMagnetostaticBoundaryIntegratorEngine_SingleThread
 *@brief
 *@details
 *<b>Revision History:<b>
@@ -25,11 +25,11 @@ namespace KEMField
 */
 
 
-class KFMElectrostaticBoundaryIntegratorEngine_SingleThread
+class KFMMagnetostaticBoundaryIntegratorEngine_SingleThread
 {
   public:
-    KFMElectrostaticBoundaryIntegratorEngine_SingleThread();
-    virtual ~KFMElectrostaticBoundaryIntegratorEngine_SingleThread();
+    KFMMagnetostaticBoundaryIntegratorEngine_SingleThread();
+    virtual ~KFMMagnetostaticBoundaryIntegratorEngine_SingleThread();
 
     //for evaluating work load weights
     void EvaluateWorkLoads(unsigned int divisions, unsigned int zeromask);
@@ -47,13 +47,13 @@ class KFMElectrostaticBoundaryIntegratorEngine_SingleThread
     };
 
     //extracted electrode data
-    void SetElectrostaticElementContainer(KFMElectrostaticElementContainerBase<3, 1>* container)
+    void SetMagnetostaticElementContainer(KFMMagnetostaticElementContainerBase<3, 1>* container)
     {
         fContainer = container;
     };
 
-    void SetParameters(const KFMElectrostaticParameters& params);
-    void SetTree(KFMElectrostaticTree* tree);
+    void SetParameters(const KFMMagnetostaticParameters& params);
+    void SetTree(KFMMagnetostaticTree* tree);
     void InitializeMultipoleMoments();
     void InitializeLocalCoefficientsForPrimaryNodes();
 
@@ -115,41 +115,41 @@ class KFMElectrostaticBoundaryIntegratorEngine_SingleThread
     static const std::string fWeightFilePrefix;
 
     //the tree object that the manager is to construct
-    KFMElectrostaticTree* fTree;
+    KFMMagnetostaticTree* fTree;
 
     //element node associator
-    KFMElectrostaticElementNodeAssociator* fElementNodeAssociator;
+    KFMMagnetostaticElementNodeAssociator* fElementNodeAssociator;
     //the multipole calculator
-    KFMElectrostaticMultipoleBatchCalculatorBase* fBatchCalc;
+    KFMMagnetostaticMultipoleBatchCalculatorBase* fBatchCalc;
     //the element's multipole distributor
-    KFMElectrostaticElementMultipoleDistributor* fMultipoleDistributor;
+    KFMMagnetostaticElementMultipoleDistributor* fMultipoleDistributor;
 
     //the local coefficient initializer
-    KFMElectrostaticLocalCoefficientInitializer* fLocalCoeffInitializer;
+    KFMMagnetostaticLocalCoefficientInitializer* fLocalCoeffInitializer;
     //the multipole coefficient initializer
-    KFMElectrostaticMultipoleInitializer* fMultipoleInitializer;
+    KFMMagnetostaticMultipoleInitializer* fMultipoleInitializer;
 
 
     //local coefficient resetter
-    KFMElectrostaticLocalCoefficientResetter* fLocalCoeffResetter;
+    KFMMagnetostaticLocalCoefficientResetter* fLocalCoeffResetter;
     //multipole resetter
-    KFMElectrostaticMultipoleResetter* fMultipoleResetter;
+    KFMMagnetostaticMultipoleResetter* fMultipoleResetter;
 
 
     //the multipole up converter
-    KFMElectrostaticRemoteToRemoteConverter* fM2MConverter;
+    KFMMagnetostaticRemoteToRemoteConverter* fM2MConverter;
 
     //the local coefficient calculator
-    //        KFMElectrostaticRemoteToLocalConverter* fM2LConverter;
-    KFMElectrostaticRemoteToLocalConverterInterface* fM2LConverterInterface;
+    //        KFMMagnetostaticRemoteToLocalConverter* fM2LConverter;
+    KFMMagnetostaticRemoteToLocalConverterInterface* fM2LConverterInterface;
 
     //the local coefficient down converter
-    KFMElectrostaticLocalToLocalConverter* fL2LConverter;
+    KFMMagnetostaticLocalToLocalConverter* fL2LConverter;
 
     //container to the eletrostatic elements
-    KFMElectrostaticElementContainerBase<3, 1>* fContainer;
+    KFMMagnetostaticElementContainerBase<3, 1>* fContainer;
 };
 
 }  // namespace KEMField
 
-#endif /* __KFMElectrostaticBoundaryIntegratorEngine_SingleThread_H__ */
+#endif /* __KFMMagnetostaticBoundaryIntegratorEngine_SingleThread_H__ */

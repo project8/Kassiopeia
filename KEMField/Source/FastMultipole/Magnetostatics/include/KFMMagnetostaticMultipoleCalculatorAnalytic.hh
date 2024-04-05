@@ -1,7 +1,7 @@
-#ifndef KFMElectrostaticMultipoleCalculatorAnalytic_HH__
-#define KFMElectrostaticMultipoleCalculatorAnalytic_HH__
+#ifndef KFMMagnetostaticMultipoleCalculatorAnalytic_HH__
+#define KFMMagnetostaticMultipoleCalculatorAnalytic_HH__
 
-#include "KFMElectrostaticMultipoleCalculator.hh"
+#include "KFMMagnetostaticMultipoleCalculator.hh"
 #include "KFMLinearAlgebraDefinitions.hh"
 
 //spherical multipole includes
@@ -17,8 +17,8 @@ namespace KEMField
 
 /**
 *
-*@file KFMElectrostaticMultipoleCalculatorAnalytic.hh
-*@class KFMElectrostaticMultipoleCalculatorAnalytic
+*@file KFMMagnetostaticMultipoleCalculatorAnalytic.hh
+*@class KFMMagnetostaticMultipoleCalculatorAnalytic
 *@brief
 *@details
 *
@@ -28,11 +28,11 @@ namespace KEMField
 *
 */
 
-class KFMElectrostaticMultipoleCalculatorAnalytic : public KFMElectrostaticMultipoleCalculator
+class KFMMagnetostaticMultipoleCalculatorAnalytic : public KFMMagnetostaticMultipoleCalculator
 {
   public:
-    KFMElectrostaticMultipoleCalculatorAnalytic();
-    ~KFMElectrostaticMultipoleCalculatorAnalytic() override;
+    KFMMagnetostaticMultipoleCalculatorAnalytic();
+    ~KFMMagnetostaticMultipoleCalculatorAnalytic() override;
 
     void SetDegree(int l_max) override;
 
@@ -142,4 +142,4 @@ class KFMElectrostaticMultipoleCalculatorAnalytic : public KFMElectrostaticMulti
 
 }  // namespace KEMField
 
-#endif /* __KFMElectrostaticMultipoleCalculatorAnalytic_H__ */
+#endif /* __KFMMagnetostaticMultipoleCalculatorAnalytic_H__ */

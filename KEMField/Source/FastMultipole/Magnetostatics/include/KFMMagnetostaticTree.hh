@@ -1,9 +1,9 @@
-#ifndef KFMElectrostaticTree_HH__
-#define KFMElectrostaticTree_HH__
+#ifndef KFMMagnetostaticTree_HH__
+#define KFMMagnetostaticTree_HH__
 
 #include "KFMCubicSpaceTree.hh"
-#include "KFMElectrostaticNode.hh"
-#include "KFMElectrostaticParameters.hh"
+#include "KFMMagnetostaticNode.hh"
+#include "KFMMagnetostaticParameters.hh"
 #include "KFMExternalIdentitySetSorter.hh"
 #include "KFMIdentitySetSorter.hh"
 
@@ -48,85 +48,85 @@ namespace KEMField
 
 
 //we operate on the tree with the following visitors
-typedef KFMNearbyElementCounter<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_DIM>
-    KFMElectrostaticNearbyElementCounter;
+typedef KFMNearbyElementCounter<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_DIM>
+    KFMMagnetostaticNearbyElementCounter;
 
-using KFMElectrostaticElementNodeAssociator = KFMElementNodeAssociator<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_DIM>;
+using KFMMagnetostaticElementNodeAssociator = KFMElementNodeAssociator<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_DIM>;
 
-using KFMElectrostaticIdentitySetListCreator = KFMIdentitySetListCreator<KFMElectrostaticNodeObjects>;
+using KFMMagnetostaticIdentitySetListCreator = KFMIdentitySetListCreator<KFMMagnetostaticNodeObjects>;
 
 //distributor of element moments
-using KFMElectrostaticElementMultipoleDistributor =
-    KFMElementScalarMomentDistributor<KFMElectrostaticNodeObjects, KFMElectrostaticMultipoleSet, KFMELECTROSTATICS_DIM>;
+using KFMMagnetostaticElementMultipoleDistributor =
+    KFMElementScalarMomentDistributor<KFMMagnetostaticNodeObjects, KFMMagnetostaticMultipoleSet, KFMMAGNETOSTATICS_DIM>;
 
 
 //initializers
-using KFMElectrostaticMultipoleInitializer =
-    KFMScalarMomentInitializer<KFMElectrostaticNodeObjects, KFMElectrostaticMultipoleSet>;
+using KFMMagnetostaticMultipoleInitializer =
+    KFMScalarMomentInitializer<KFMMagnetostaticNodeObjects, KFMMagnetostaticMultipoleSet>;
 
-using KFMElectrostaticLocalCoefficientInitializer =
-    KFMScalarMomentInitializer<KFMElectrostaticNodeObjects, KFMElectrostaticLocalCoefficientSet>;
+using KFMMagnetostaticLocalCoefficientInitializer =
+    KFMScalarMomentInitializer<KFMMagnetostaticNodeObjects, KFMMagnetostaticLocalCoefficientSet>;
 
 //resetters
-using KFMElectrostaticMultipoleResetter =
-    KFMScalarMomentResetter<KFMElectrostaticNodeObjects, KFMElectrostaticMultipoleSet>;
+using KFMMagnetostaticMultipoleResetter =
+    KFMScalarMomentResetter<KFMMagnetostaticNodeObjects, KFMMagnetostaticMultipoleSet>;
 
-using KFMElectrostaticLocalCoefficientResetter =
-    KFMScalarMomentResetter<KFMElectrostaticNodeObjects, KFMElectrostaticLocalCoefficientSet>;
+using KFMMagnetostaticLocalCoefficientResetter =
+    KFMScalarMomentResetter<KFMMagnetostaticNodeObjects, KFMMagnetostaticLocalCoefficientSet>;
 
 //moment converters
-using KFMElectrostaticRemoteToRemoteConverter =
-    KFMScalarMomentRemoteToRemoteConverter<KFMElectrostaticNodeObjects, KFMElectrostaticMultipoleSet,
-                                           KFMResponseKernel_3DLaplaceM2M, KFMELECTROSTATICS_DIM>;
+using KFMMagnetostaticRemoteToRemoteConverter =
+    KFMScalarMomentRemoteToRemoteConverter<KFMMagnetostaticNodeObjects, KFMMagnetostaticMultipoleSet,
+                                           KFMResponseKernel_3DLaplaceM2M, KFMMAGNETOSTATICS_DIM>;
 
-using KFMElectrostaticLocalToLocalConverter =
-    KFMScalarMomentLocalToLocalConverter<KFMElectrostaticNodeObjects, KFMElectrostaticLocalCoefficientSet,
-                                         KFMResponseKernel_3DLaplaceL2L, KFMELECTROSTATICS_DIM>;
+using KFMMagnetostaticLocalToLocalConverter =
+    KFMScalarMomentLocalToLocalConverter<KFMMagnetostaticNodeObjects, KFMMagnetostaticLocalCoefficientSet,
+                                         KFMResponseKernel_3DLaplaceL2L, KFMMAGNETOSTATICS_DIM>;
 
 #ifdef USE_REDUCED_M2L
-using KFMElectrostaticRemoteToLocalConverter =
-    KFMReducedScalarMomentRemoteToLocalConverter<KFMElectrostaticNodeObjects, KFMElectrostaticMultipoleSet,
-                                                 KFMElectrostaticLocalCoefficientSet, KFMResponseKernel_3DLaplaceM2L,
-                                                 KFMELECTROSTATICS_DIM>;
+using KFMMagnetostaticRemoteToLocalConverter =
+    KFMReducedScalarMomentRemoteToLocalConverter<KFMMagnetostaticNodeObjects, KFMMagnetostaticMultipoleSet,
+                                                 KFMMagnetostaticLocalCoefficientSet, KFMResponseKernel_3DLaplaceM2L,
+                                                 KFMMAGNETOSTATICS_DIM>;
 #else
-typedef KFMScalarMomentRemoteToLocalConverter<KFMElectrostaticNodeObjects, KFMElectrostaticMultipoleSet,
-                                              KFMElectrostaticLocalCoefficientSet, KFMResponseKernel_3DLaplaceM2L,
-                                              KFMELECTROSTATICS_DIM>
-    KFMElectrostaticRemoteToLocalConverter;
+typedef KFMScalarMomentRemoteToLocalConverter<KFMMagnetostaticNodeObjects, KFMMagnetostaticMultipoleSet,
+                                              KFMMagnetostaticLocalCoefficientSet, KFMResponseKernel_3DLaplaceM2L,
+                                              KFMMAGNETOSTATICS_DIM>
+    KFMMagnetostaticRemoteToLocalConverter;
 #endif
 
 //interface to m2l converters to handle different divisions on top level
-using KFMElectrostaticRemoteToLocalConverterInterface =
-    KFMRemoteToLocalConverterInterface<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_DIM, KFMElectrostaticRemoteToLocalConverter>;
+using KFMMagnetostaticRemoteToLocalConverterInterface =
+    KFMRemoteToLocalConverterInterface<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_DIM, KFMMagnetostaticRemoteToLocalConverter>;
 
 //navigator
-using KFMElectrostaticTreeNavigator = KFMCubicSpaceTreeNavigator<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_DIM>;
+using KFMMagnetostaticTreeNavigator = KFMCubicSpaceTreeNavigator<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_DIM>;
 
 //id set collector
-using KFMElectrostaticNodeIdentitySetMerger = KFMIdentitySetMerger<KFMElectrostaticNodeObjects>;
+using KFMMagnetostaticNodeIdentitySetMerger = KFMIdentitySetMerger<KFMMagnetostaticNodeObjects>;
 
 //inspector to determine node primacy
-using KFMElectrostaticAdjacencyProgenitor = KFMCubicSpaceNodeAdjacencyProgenitor<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_DIM>;
+using KFMMagnetostaticAdjacencyProgenitor = KFMCubicSpaceNodeAdjacencyProgenitor<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_DIM>;
 
 
 //sorters for the identity set, and external identity set
-using KFMElectrostaticIdentitySetSorter = KFMIdentitySetSorter<KFMElectrostaticNodeObjects>;
+using KFMMagnetostaticIdentitySetSorter = KFMIdentitySetSorter<KFMMagnetostaticNodeObjects>;
 
-using KFMElectrostaticExternalIdentitySetSorter = KFMExternalIdentitySetSorter<KFMElectrostaticNodeObjects>;
+using KFMMagnetostaticExternalIdentitySetSorter = KFMExternalIdentitySetSorter<KFMMagnetostaticNodeObjects>;
 
-using KFMElectrostaticElementLocator = KFMElementLocator<KFMElectrostaticNodeObjects>;
+using KFMMagnetostaticElementLocator = KFMElementLocator<KFMMagnetostaticNodeObjects>;
 
-using KFMElectrostaticNodeIdentityListCreator = KFMNodeIdentityListCreator<KFMElectrostaticNodeObjects>;
+using KFMMagnetostaticNodeIdentityListCreator = KFMNodeIdentityListCreator<KFMMagnetostaticNodeObjects>;
 
-using KFMElectrostaticNodeIdentityListRangeAssociator = KFMNodeIdentityListRangeAssociator<KFMElectrostaticNodeObjects>;
+using KFMMagnetostaticNodeIdentityListRangeAssociator = KFMNodeIdentityListRangeAssociator<KFMMagnetostaticNodeObjects>;
 
-using KFMElectrostaticElementInfluenceRangeCollector =
-    KFMElementInfluenceRangeCollector<KFMELECTROSTATICS_DIM, KFMElectrostaticNodeObjects>;
+using KFMMagnetostaticElementInfluenceRangeCollector =
+    KFMElementInfluenceRangeCollector<KFMMAGNETOSTATICS_DIM, KFMMagnetostaticNodeObjects>;
 
-using KFMElectrostaticNodeIdentitySetCollector = KFMIdentitySetCollector<KFMElectrostaticNodeObjects>;
+using KFMMagnetostaticNodeIdentitySetCollector = KFMIdentitySetCollector<KFMMagnetostaticNodeObjects>;
 
-using KFMElectrostaticCollocationPointIdentitySetCreator =
-    KFMCollocationPointIdentitySetCreator<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_DIM>;
+using KFMMagnetostaticCollocationPointIdentitySetCreator =
+    KFMCollocationPointIdentitySetCreator<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_DIM>;
 
 //the local coefficient calculator
 //KFMLocalCoefficientCalculator* fLocalCoeffCalculator;
@@ -134,8 +134,8 @@ using KFMElectrostaticCollocationPointIdentitySetCreator =
 
 /*
 *
-*@file KFMElectrostaticTree.hh
-*@class KFMElectrostaticTree
+*@file KFMMagnetostaticTree.hh
+*@class KFMMagnetostaticTree
 *@brief
 *@details
 *
@@ -146,22 +146,22 @@ using KFMElectrostaticCollocationPointIdentitySetCreator =
 */
 
 //this is the type of tree we operate on
-class KFMElectrostaticTree : public KFMCubicSpaceTree<KFMELECTROSTATICS_DIM, KFMElectrostaticNodeObjects>
+class KFMMagnetostaticTree : public KFMCubicSpaceTree<KFMMAGNETOSTATICS_DIM, KFMMagnetostaticNodeObjects>
 {
   public:
-    KFMElectrostaticTree() : KFMCubicSpaceTree<KFMELECTROSTATICS_DIM, KFMElectrostaticNodeObjects>()
+    KFMMagnetostaticTree() : KFMCubicSpaceTree<KFMMAGNETOSTATICS_DIM, KFMMagnetostaticNodeObjects>()
     {
         ;
     }
-    ~KFMElectrostaticTree() override = default;
+    ~KFMMagnetostaticTree() override = default;
     ;
 
-    void SetParameters(const KFMElectrostaticParameters& params)
+    void SetParameters(const KFMMagnetostaticParameters& params)
     {
         fParameters = params;
     }
 
-    KFMElectrostaticParameters GetParameters()
+    KFMMagnetostaticParameters GetParameters()
     {
         return fParameters;
     };
@@ -176,11 +176,11 @@ class KFMElectrostaticTree : public KFMCubicSpaceTree<KFMELECTROSTATICS_DIM, KFM
     };
 
   private:
-    KFMElectrostaticParameters fParameters;
+    KFMMagnetostaticParameters fParameters;
     std::string fUniqueID;
 };
 
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticTree_H__ */
+#endif /* KFMMagnetostaticTree_H__ */

@@ -1,8 +1,8 @@
-#include "KFMElectrostaticTreeBuilder_MPI.hh"
+#include "KFMMagnetostaticTreeBuilder_MPI.hh"
 
 #include "KFMCompoundInspectingActor.hh"
 #include "KFMCubicSpaceTreeStaticLoadBalancer.hh"
-#include "KFMElectrostaticNodeWorkScoreCalculator.hh"
+#include "KFMMagnetostaticNodeWorkScoreCalculator.hh"
 #include "KFMLeafConditionActor.hh"
 #include "KFMLevelConditionActor.hh"
 #include "KFMNodeChildToParentFlagValueInitializer.hh"
@@ -23,8 +23,8 @@ namespace KEMField
 {
 
 //extracted electrode data
-void KFMElectrostaticTreeBuilder_MPI::SetElectrostaticElementContainer(
-    KFMElectrostaticElementContainerBase<KFMELECTROSTATICS_DIM, KFMELECTROSTATICS_BASIS>* container)
+void KFMMagnetostaticTreeBuilder_MPI::SetMagnetostaticElementContainer(
+    KFMMagnetostaticElementContainerBase<KFMMAGNETOSTATICS_DIM, KFMMAGNETOSTATICS_BASIS>* container)
 {
     fContainer = container;
 };
@@ -32,8 +32,8 @@ void KFMElectrostaticTreeBuilder_MPI::SetElectrostaticElementContainer(
 ////////////////////////////////////////////////////////////////////////////////
 
 
-KFMElectrostaticElementContainerBase<KFMELECTROSTATICS_DIM, KFMELECTROSTATICS_BASIS>*
-KFMElectrostaticTreeBuilder_MPI::GetElectrostaticElementContainer()
+KFMMagnetostaticElementContainerBase<KFMMAGNETOSTATICS_DIM, KFMMAGNETOSTATICS_BASIS>*
+KFMMagnetostaticTreeBuilder_MPI::GetMagnetostaticElementContainer()
 {
     return fContainer;
 };
@@ -41,10 +41,10 @@ KFMElectrostaticTreeBuilder_MPI::GetElectrostaticElementContainer()
 ////////////////////////////////////////////////////////////////////////////////
 
 
-void KFMElectrostaticTreeBuilder_MPI::SetTree(KFMElectrostaticTree* tree)
+void KFMMagnetostaticTreeBuilder_MPI::SetTree(KFMMagnetostaticTree* tree)
 {
     fTree = tree;
-    KFMElectrostaticParameters params = tree->GetParameters();
+    KFMMagnetostaticParameters params = tree->GetParameters();
 
     fDegree = params.degree;
     fNTerms = (fDegree + 1) * (fDegree + 1);
@@ -71,28 +71,28 @@ void KFMElectrostaticTreeBuilder_MPI::SetTree(KFMElectrostaticTree* tree)
         MPI_SINGLE_PROCESS
         {
             //print the parameters
-            kfmout << "KFMElectrostaticTreeBuilder_MPI::SetParameters: top level divisions set to "
+            kfmout << "KFMMagnetostaticTreeBuilder_MPI::SetParameters: top level divisions set to "
                    << params.top_level_divisions << kfmendl;
-            kfmout << "KFMElectrostaticTreeBuilder_MPI::SetParameters: divisions set to " << params.divisions
+            kfmout << "KFMMagnetostaticTreeBuilder_MPI::SetParameters: divisions set to " << params.divisions
                    << kfmendl;
-            kfmout << "KFMElectrostaticTreeBuilder_MPI::SetParameters: degree set to " << params.degree << kfmendl;
-            kfmout << "KFMElectrostaticTreeBuilder_MPI::SetParameters: zero mask size set to " << params.zeromask
+            kfmout << "KFMMagnetostaticTreeBuilder_MPI::SetParameters: degree set to " << params.degree << kfmendl;
+            kfmout << "KFMMagnetostaticTreeBuilder_MPI::SetParameters: zero mask size set to " << params.zeromask
                    << kfmendl;
-            kfmout << "KFMElectrostaticTreeBuilder_MPI::SetParameters: max tree depth set to "
+            kfmout << "KFMMagnetostaticTreeBuilder_MPI::SetParameters: max tree depth set to "
                    << params.maximum_tree_depth << kfmendl;
 
             if (!(params.use_region_estimation)) {
-                kfmout << "KFMElectrostaticTreeBuilder_MPI::SetParameters: using user defined world cube volume"
+                kfmout << "KFMMagnetostaticTreeBuilder_MPI::SetParameters: using user defined world cube volume"
                        << kfmendl;
-                kfmout << "KFMElectrostaticTreeBuilder_MPI::SetParameters: world cube center set to ("
+                kfmout << "KFMMagnetostaticTreeBuilder_MPI::SetParameters: world cube center set to ("
                        << params.world_center_x << ", " << params.world_center_y << ", " << params.world_center_z
                        << ") " << kfmendl;
-                kfmout << "KFMElectrostaticTreeBuilder_MPI::SetParameters: world cube side length set to ("
+                kfmout << "KFMMagnetostaticTreeBuilder_MPI::SetParameters: world cube side length set to ("
                        << params.world_length << kfmendl;
             }
             else {
-                kfmout << "KFMElectrostaticTreeBuilder_MPI::SetParameters: using region size estimation" << kfmendl;
-                kfmout << "KFMElectrostaticTreeBuilder_MPI::SetParameters: region expansion factor set to "
+                kfmout << "KFMMagnetostaticTreeBuilder_MPI::SetParameters: using region size estimation" << kfmendl;
+                kfmout << "KFMMagnetostaticTreeBuilder_MPI::SetParameters: region expansion factor set to "
                        << params.region_expansion_factor << kfmendl;
             }
         }
@@ -102,7 +102,7 @@ void KFMElectrostaticTreeBuilder_MPI::SetTree(KFMElectrostaticTree* tree)
 ////////////////////////////////////////////////////////////////////////////////
 
 
-KFMElectrostaticTree* KFMElectrostaticTreeBuilder_MPI::GetTree()
+KFMMagnetostaticTree* KFMMagnetostaticTreeBuilder_MPI::GetTree()
 {
     return fTree;
 };
@@ -110,7 +110,7 @@ KFMElectrostaticTree* KFMElectrostaticTreeBuilder_MPI::GetTree()
 ////////////////////////////////////////////////////////////////////////////////
 
 
-void KFMElectrostaticTreeBuilder_MPI::ConstructRootNode()
+void KFMMagnetostaticTreeBuilder_MPI::ConstructRootNode()
 {
     fTree->RestrictActionBehavior(false);
 
@@ -118,14 +118,14 @@ void KFMElectrostaticTreeBuilder_MPI::ConstructRootNode()
         if (fVerbosity > 2) {
             MPI_SINGLE_PROCESS
             {
-                kfmout << "KFMElectrostaticTreeBuilder_MPI::Initialize: Region size estimator running. " << kfmendl;
+                kfmout << "KFMMagnetostaticTreeBuilder_MPI::Initialize: Region size estimator running. " << kfmendl;
             }
         }
 
         //the region size estimator
-        KFMElectrostaticRegionSizeEstimator regionSizeEstimator;
+        KFMMagnetostaticRegionSizeEstimator regionSizeEstimator;
 
-        regionSizeEstimator.SetElectrostaticElementContainer(fContainer);
+        regionSizeEstimator.SetMagnetostaticElementContainer(fContainer);
         regionSizeEstimator.ComputeEstimate();
         KFMCube<3> estimate = regionSizeEstimator.GetCubeEstimate();
 
@@ -135,9 +135,9 @@ void KFMElectrostaticTreeBuilder_MPI::ConstructRootNode()
         if (fVerbosity > 2) {
             MPI_SINGLE_PROCESS
             {
-                kfmout << "KFMElectrostaticTreeBuilder_MPI::Initialize: Estimated world cube center is ("
+                kfmout << "KFMMagnetostaticTreeBuilder_MPI::Initialize: Estimated world cube center is ("
                        << fWorldCenter[0] << ", " << fWorldCenter[1] << ", " << fWorldCenter[2] << ")" << kfmendl;
-                kfmout << "KFMElectrostaticTreeBuilder_MPI::Initialize: Estimated world cube size length is "
+                kfmout << "KFMMagnetostaticTreeBuilder_MPI::Initialize: Estimated world cube size length is "
                        << fWorldLength << kfmendl;
             }
         }
@@ -152,9 +152,9 @@ void KFMElectrostaticTreeBuilder_MPI::ConstructRootNode()
     if (fVerbosity > 2) {
         MPI_SINGLE_PROCESS
         {
-            kfmout << "KFMElectrostaticTreeBuilder_MPI::ConstructRootNode: Constructing root node with center at ("
+            kfmout << "KFMMagnetostaticTreeBuilder_MPI::ConstructRootNode: Constructing root node with center at ("
                    << center[0] << ", " << center[1] << ", " << center[2] << ")." << kfmendl;
-            kfmout << "KFMElectrostaticTreeBuilder_MPI::ConstructRootNode: Root node has side length of "
+            kfmout << "KFMMagnetostaticTreeBuilder_MPI::ConstructRootNode: Root node has side length of "
                    << fWorldLength << " and contains " << n_elements << " boundary elements." << kfmendl;
         }
     }
@@ -170,16 +170,16 @@ void KFMElectrostaticTreeBuilder_MPI::ConstructRootNode()
     tree_prop->SetDimensions(dim);
     tree_prop->SetTopLevelDimensions(top_level_dim);
 
-    KFMElectrostaticNode* root = fTree->GetRootNode();
+    KFMMagnetostaticNode* root = fTree->GetRootNode();
 
     //set the world volume
-    KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCube<3>>::SetNodeObject(world_volume, root);
+    KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCube<3>>::SetNodeObject(world_volume, root);
 
     //set the tree properties
-    KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCubicSpaceTreeProperties<3>>::SetNodeObject(tree_prop, root);
+    KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCubicSpaceTreeProperties<3>>::SetNodeObject(tree_prop, root);
 
     //set the element container
-    KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMElectrostaticElementContainerBase<3, 1>>::SetNodeObject(
+    KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMMagnetostaticElementContainerBase<3, 1>>::SetNodeObject(
         fContainer,
         root);
 
@@ -190,7 +190,7 @@ void KFMElectrostaticTreeBuilder_MPI::ConstructRootNode()
     }
 
     //set the id set
-    KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMIdentitySet>::SetNodeObject(root_list, root);
+    KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMIdentitySet>::SetNodeObject(root_list, root);
 
     //set basis node properties
     root->SetID(tree_prop->RegisterNode());
@@ -201,7 +201,7 @@ void KFMElectrostaticTreeBuilder_MPI::ConstructRootNode()
 ////////////////////////////////////////////////////////////////////////////////
 
 
-void KFMElectrostaticTreeBuilder_MPI::PerformSpatialSubdivision()
+void KFMMagnetostaticTreeBuilder_MPI::PerformSpatialSubdivision()
 {
     fTree->RestrictActionBehavior(false);
 
@@ -213,7 +213,7 @@ void KFMElectrostaticTreeBuilder_MPI::PerformSpatialSubdivision()
         //subdivision condition was unset, so we default to aggressive
         //since it is the only one which takes no paramters
         fSubdivisionCondition =
-            new KFMSubdivisionConditionAggressive<KFMELECTROSTATICS_DIM, KFMElectrostaticNodeObjects>();
+            new KFMSubdivisionConditionAggressive<KFMMAGNETOSTATICS_DIM, KFMMagnetostaticNodeObjects>();
         fSubdivisionConditionIsOwned = true;
     }
 
@@ -221,7 +221,7 @@ void KFMElectrostaticTreeBuilder_MPI::PerformSpatialSubdivision()
     fTree->SetSubdivisionCondition(fSubdivisionCondition);
 
     //things to do on a node after it has been visited by the progenitor
-    KFMCubicSpaceBallSorter<3, KFMElectrostaticNodeObjects> bball_sorter;
+    KFMCubicSpaceBallSorter<3, KFMMagnetostaticNodeObjects> bball_sorter;
     bball_sorter.SetInsertionCondition(&basic_insertion_condition);
     fTree->AddPostSubdivisionAction(&bball_sorter);
 
@@ -232,7 +232,7 @@ void KFMElectrostaticTreeBuilder_MPI::PerformSpatialSubdivision()
     if (fVerbosity > 2) {
         MPI_SINGLE_PROCESS
         {
-            kfmout << "KFMElectrostaticTreeBuilder_MPI::PerformSpatialSubdivision: Subdividing region using the "
+            kfmout << "KFMMagnetostaticTreeBuilder_MPI::PerformSpatialSubdivision: Subdividing region using the "
                    << fSubdivisionCondition->Name() << " strategy " << kfmendl;
         }
     }
@@ -243,7 +243,7 @@ void KFMElectrostaticTreeBuilder_MPI::PerformSpatialSubdivision()
         MPI_SINGLE_PROCESS
         {
             kfmout
-                << "KFMElectrostaticTreeBuilder_MPI::PerformSpatialSubdivision: Done performing spatial subdivision. "
+                << "KFMMagnetostaticTreeBuilder_MPI::PerformSpatialSubdivision: Done performing spatial subdivision. "
                 << kfmendl;
         }
     }
@@ -252,19 +252,19 @@ void KFMElectrostaticTreeBuilder_MPI::PerformSpatialSubdivision()
 ////////////////////////////////////////////////////////////////////////////////
 
 
-void KFMElectrostaticTreeBuilder_MPI::FlagNonZeroMultipoleNodes()
+void KFMMagnetostaticTreeBuilder_MPI::FlagNonZeroMultipoleNodes()
 {
     fTree->RestrictActionBehavior(false);
 
     //the condition (non-empty id set)
-    KFMNonEmptyIdentitySetActor<KFMElectrostaticNodeObjects> non_empty_condition;
+    KFMNonEmptyIdentitySetActor<KFMMagnetostaticNodeObjects> non_empty_condition;
 
     //the flag value initializer
-    KFMNodeChildToParentFlagValueInitializer<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> flag_init;
+    KFMNodeChildToParentFlagValueInitializer<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> flag_init;
     flag_init.SetFlagIndex(1);
     flag_init.SetFlagValue(1);
 
-    KFMConditionalActor<KFMElectrostaticNode> conditional_actor;
+    KFMConditionalActor<KFMMagnetostaticNode> conditional_actor;
 
     conditional_actor.SetInspectingActor(&non_empty_condition);
     conditional_actor.SetOperationalActor(&flag_init);
@@ -275,35 +275,35 @@ void KFMElectrostaticTreeBuilder_MPI::FlagNonZeroMultipoleNodes()
 ////////////////////////////////////////////////////////////////////////////////
 
 
-void KFMElectrostaticTreeBuilder_MPI::PerformAdjacencySubdivision()
+void KFMMagnetostaticTreeBuilder_MPI::PerformAdjacencySubdivision()
 {
     fTree->RestrictActionBehavior(false);
 
     //adjacency progenation condition
-    KFMElectrostaticAdjacencyProgenitor adjacencyProgenitor;
+    KFMMagnetostaticAdjacencyProgenitor adjacencyProgenitor;
     adjacencyProgenitor.SetZeroMaskSize(fZeroMaskSize);
 
     //the condition that we use is that the node's adjacent to a node which
     //has non-zero multipole moments, and is not a leaf node
 
     //leaf condition inspector
-    KFMLeafConditionActor<KFMElectrostaticNode> leaf_condition;
+    KFMLeafConditionActor<KFMMagnetostaticNode> leaf_condition;
     leaf_condition.SetFalseOnLeafNodes();
 
     //the non-zero multipole flag inspector
-    KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> multipole_flag_condition;
+    KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> multipole_flag_condition;
     multipole_flag_condition.SetFlagIndex(1);
     multipole_flag_condition.SetFlagValue(1);
 
     //non-zero multipole flag inspector for all of the node's children
-    KFMNodeParentToChildFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS>
+    KFMNodeParentToChildFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS>
         child_multipole_flag_condition;
     child_multipole_flag_condition.SetFlagIndex(1);
     child_multipole_flag_condition.SetFlagValue(1);
     child_multipole_flag_condition.UseOrCondition();
 
     //compound condition
-    KFMCompoundInspectingActor<KFMElectrostaticNode> compound_inspector;
+    KFMCompoundInspectingActor<KFMMagnetostaticNode> compound_inspector;
     compound_inspector.UseAndCondition();
 
     compound_inspector.AddInspectingActor(&leaf_condition);
@@ -311,7 +311,7 @@ void KFMElectrostaticTreeBuilder_MPI::PerformAdjacencySubdivision()
     compound_inspector.AddInspectingActor(&child_multipole_flag_condition);
 
     //now we constuct the conditional actor
-    KFMConditionalActor<KFMElectrostaticNode> conditional_actor;
+    KFMConditionalActor<KFMMagnetostaticNode> conditional_actor;
 
     conditional_actor.SetInspectingActor(&compound_inspector);
     conditional_actor.SetOperationalActor(&adjacencyProgenitor);
@@ -322,7 +322,7 @@ void KFMElectrostaticTreeBuilder_MPI::PerformAdjacencySubdivision()
         MPI_SINGLE_PROCESS
         {
             kfmout
-                << "KFMElectrostaticTreeBuilder_MPI::PerformAdjacencySubdivision: Done performing subdivision of nodes satisfying adjacency condition."
+                << "KFMMagnetostaticTreeBuilder_MPI::PerformAdjacencySubdivision: Done performing subdivision of nodes satisfying adjacency condition."
                 << kfmendl;
         }
     }
@@ -331,16 +331,16 @@ void KFMElectrostaticTreeBuilder_MPI::PerformAdjacencySubdivision()
 ////////////////////////////////////////////////////////////////////////////////
 
 
-void KFMElectrostaticTreeBuilder_MPI::FlagPrimaryNodes()
+void KFMMagnetostaticTreeBuilder_MPI::FlagPrimaryNodes()
 {
     fTree->RestrictActionBehavior(false);
 
     //for charge density solving we need to flag nodes which contain element centroids
     //(these get the 'primary' status flag)
-    KFMElectrostaticTreeNavigator navigator;
+    KFMMagnetostaticTreeNavigator navigator;
 
     //the flag value initializer
-    KFMNodeChildToParentFlagValueInitializer<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> flag_init;
+    KFMNodeChildToParentFlagValueInitializer<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> flag_init;
     flag_init.SetFlagIndex(0);
     flag_init.SetFlagValue(1);
 
@@ -352,12 +352,12 @@ void KFMElectrostaticTreeBuilder_MPI::FlagPrimaryNodes()
         navigator.ApplyAction(fTree->GetRootNode());
 
         if (navigator.Found()) {
-            KFMElectrostaticNode* leaf_node = navigator.GetLeafNode();
+            KFMMagnetostaticNode* leaf_node = navigator.GetLeafNode();
             flag_init.ApplyAction(leaf_node);
         }
         else {
             kfmout
-                << "KFMElectrostaticBoundaryIntegrator::FlagPrimaryNodes: Error, element centroid not found in region."
+                << "KFMMagnetostaticBoundaryIntegrator::FlagPrimaryNodes: Error, element centroid not found in region."
                 << kfmendl;
             KMPIInterface::GetInstance()->Finalize();
             kfmexit(1);
@@ -367,14 +367,14 @@ void KFMElectrostaticTreeBuilder_MPI::FlagPrimaryNodes()
     if (fVerbosity > 2) {
         MPI_SINGLE_PROCESS
         {
-            kfmout << "KFMElectrostaticTreeBuilder_MPI::FlagPrimaryNodes: Done flagging primary nodes." << kfmendl;
+            kfmout << "KFMMagnetostaticTreeBuilder_MPI::FlagPrimaryNodes: Done flagging primary nodes." << kfmendl;
         }
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
+void KFMMagnetostaticTreeBuilder_MPI::DetermineSourceNodes()
 {
     //get partner process and number of processes
     unsigned int n_processes = 0;
@@ -389,7 +389,7 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
     }
 
     //condition for a node to have a multipole expansion is based on the non-zero multipole moment flag
-    KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> multipole_flag_condition;
+    KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> multipole_flag_condition;
     multipole_flag_condition.SetFlagIndex(1);
     multipole_flag_condition.SetFlagValue(1);
 
@@ -406,7 +406,7 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
     }
 
     //score calculator
-    KFMElectrostaticNodeWorkScoreCalculator score_calc;
+    KFMMagnetostaticNodeWorkScoreCalculator score_calc;
     score_calc.SetFFTWeight(fFFTWeight);
 
     //seem to get better balancing by using zero weight for sparse matrix work...need to study this further
@@ -414,8 +414,8 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
     score_calc.SetSparseMatrixWeight(0.0);
 
     if (fSubdivisionCondition->Name() == std::string("balanced")) {
-        KFMSubdivisionConditionBalanced<KFMELECTROSTATICS_DIM, KFMElectrostaticNodeObjects>* sbdc = nullptr;
-        sbdc = dynamic_cast<KFMSubdivisionConditionBalanced<KFMELECTROSTATICS_DIM, KFMElectrostaticNodeObjects>*>(
+        KFMSubdivisionConditionBalanced<KFMMAGNETOSTATICS_DIM, KFMMagnetostaticNodeObjects>* sbdc = nullptr;
+        sbdc = dynamic_cast<KFMSubdivisionConditionBalanced<KFMMAGNETOSTATICS_DIM, KFMMagnetostaticNodeObjects>*>(
             fSubdivisionCondition);
         double bd = sbdc->GetBiasDegree();
         score_calc.SetNTerms((bd + 1.0) * (bd + 2.0) / 2.0);
@@ -426,18 +426,18 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
     score_calc.SetZeroMaskSize(fZeroMaskSize);
 
     //now we construct a collection of all of the source nodes and their info
-    std::vector<KFMWorkBlock<KFMELECTROSTATICS_DIM>> allBlocks;
+    std::vector<KFMWorkBlock<KFMMAGNETOSTATICS_DIM>> allBlocks;
     double block_length = fWorldLength / (double) fTopLevelDivisions;
     for (unsigned int i = 0; i < n_top_level_source_nodes; i++) {
-        KFMWorkBlock<KFMELECTROSTATICS_DIM> block;
+        KFMWorkBlock<KFMMAGNETOSTATICS_DIM> block;
         block.index = source_node_indexes[i];
-        KFMElectrostaticNode* node = fTree->GetRootNode()->GetChild(source_node_indexes[i]);
+        KFMMagnetostaticNode* node = fTree->GetRootNode()->GetChild(source_node_indexes[i]);
         score_calc.ApplyAction(node);
         block.score = score_calc.GetNodeScore();
-        KFMPoint<KFMELECTROSTATICS_DIM> center =
-            KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCube<KFMELECTROSTATICS_DIM>>::GetNodeObject(node)
+        KFMPoint<KFMMAGNETOSTATICS_DIM> center =
+            KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCube<KFMMAGNETOSTATICS_DIM>>::GetNodeObject(node)
                 ->GetCenter();
-        for (unsigned int i = 0; i < KFMELECTROSTATICS_DIM; i++) {
+        for (unsigned int i = 0; i < KFMMAGNETOSTATICS_DIM; i++) {
             block.spatial_coordinates[i] = center[i];
         }
         allBlocks.push_back(block);
@@ -447,7 +447,7 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
     std::vector<unsigned int> process_block_ids;
     if (KMPIInterface::GetInstance()->SplitMode()) {
         if (KMPIInterface::GetInstance()->IsEvenGroupMember()) {
-            KFMCubicSpaceTreeStaticLoadBalancer<KFMELECTROSTATICS_DIM> load_balancer;
+            KFMCubicSpaceTreeStaticLoadBalancer<KFMMAGNETOSTATICS_DIM> load_balancer;
             load_balancer.SetMaxIterations(10 * allBlocks.size() * n_processes);
             load_balancer.SetVerbosity(fVerbosity);
             load_balancer.SetBlockLength(block_length);
@@ -469,7 +469,7 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
 
             if (ret_val != MPI_SUCCESS) {
                 int proc = KMPIInterface::GetInstance()->GetProcess();
-                kfmout << "KFMElectrostaticTreeBuilder:: Error using MPI_Send from process: " << proc << " to "
+                kfmout << "KFMMagnetostaticTreeBuilder:: Error using MPI_Send from process: " << proc << " to "
                        << partner << kfmendl;
                 KMPIInterface::GetInstance()->Finalize();
                 std::exit(1);
@@ -484,7 +484,7 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
 
             if (ret_val != MPI_SUCCESS) {
                 int proc = KMPIInterface::GetInstance()->GetProcess();
-                kfmout << "KFMElectrostaticTreeBuilder:: Error using MPI_Send from process: " << proc << " to "
+                kfmout << "KFMMagnetostaticTreeBuilder:: Error using MPI_Send from process: " << proc << " to "
                        << partner << kfmendl;
                 KMPIInterface::GetInstance()->Finalize();
                 std::exit(1);
@@ -504,7 +504,7 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
 
             if (ret_val != MPI_SUCCESS) {
                 int proc = KMPIInterface::GetInstance()->GetProcess();
-                kfmout << "KFMElectrostaticTreeBuilder:: Error using MPI_Recv to process: " << proc << " from "
+                kfmout << "KFMMagnetostaticTreeBuilder:: Error using MPI_Recv to process: " << proc << " from "
                        << partner << kfmendl;
                 KMPIInterface::GetInstance()->Finalize();
                 std::exit(1);
@@ -521,7 +521,7 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
 
             if (ret_val != MPI_SUCCESS) {
                 int proc = KMPIInterface::GetInstance()->GetProcess();
-                kfmout << "KFMElectrostaticTreeBuilder:: Error using MPI_Recv to process: " << proc << " from "
+                kfmout << "KFMMagnetostaticTreeBuilder:: Error using MPI_Recv to process: " << proc << " from "
                        << partner << kfmendl;
                 KMPIInterface::GetInstance()->Finalize();
                 std::exit(1);
@@ -530,7 +530,7 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
     }
     else {
         //no split mode, all nodes do same work
-        KFMCubicSpaceTreeStaticLoadBalancer<KFMELECTROSTATICS_DIM> load_balancer;
+        KFMCubicSpaceTreeStaticLoadBalancer<KFMMAGNETOSTATICS_DIM> load_balancer;
         load_balancer.SetMaxIterations(10 * allBlocks.size() * n_processes);
         load_balancer.SetVerbosity(fVerbosity);
         load_balancer.SetBlockLength(block_length);
@@ -558,7 +558,7 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
     if (fNSourceNodes == 0) {
         //error, abort, too many processes allocated for this job
         kfmout
-            << "KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes(): Error, too many MPI processes allocated for this job. ";
+            << "KFMMagnetostaticTreeBuilder_MPI::DetermineSourceNodes(): Error, too many MPI processes allocated for this job. ";
         kfmout << "The total number of top level source nodes is: " << n_top_level_source_nodes
                << " but the number of processes is: " << n_processes << ". ";
         kfmout
@@ -583,15 +583,15 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
     //determine the source region
     fSourceVolume.Clear();
     for (unsigned int i = 0; i < fNSourceNodes; i++) {
-        KFMCube<KFMELECTROSTATICS_DIM>* cube = nullptr;
-        cube = KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCube<KFMELECTROSTATICS_DIM>>::GetNodeObject(
+        KFMCube<KFMMAGNETOSTATICS_DIM>* cube = nullptr;
+        cube = KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCube<KFMMAGNETOSTATICS_DIM>>::GetNodeObject(
             fSourceNodeCollection[i]);
         fSourceVolume.AddCube(cube);
     }
 
     //determine the nodes that are not part of the source region
     for (unsigned int i = 0; i < n_children; i++) {
-        KFMElectrostaticNode* node = fTree->GetRootNode()->GetChild(i);
+        KFMMagnetostaticNode* node = fTree->GetRootNode()->GetChild(i);
         bool non_source = true;
         for (auto& j : fSourceNodeCollection) {
             if (j == node) {
@@ -607,7 +607,7 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineSourceNodes()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void KFMElectrostaticTreeBuilder_MPI::GetSourceNodeIndexes(std::vector<unsigned int>* source_node_indexes) const
+void KFMMagnetostaticTreeBuilder_MPI::GetSourceNodeIndexes(std::vector<unsigned int>* source_node_indexes) const
 {
     source_node_indexes->clear();
     for (unsigned int i = 0; i < fNSourceNodes; i++) {
@@ -618,7 +618,7 @@ void KFMElectrostaticTreeBuilder_MPI::GetSourceNodeIndexes(std::vector<unsigned 
 ////////////////////////////////////////////////////////////////////////////////
 
 
-void KFMElectrostaticTreeBuilder_MPI::GetTargetNodeIndexes(std::vector<unsigned int>* target_node_indexes) const
+void KFMMagnetostaticTreeBuilder_MPI::GetTargetNodeIndexes(std::vector<unsigned int>* target_node_indexes) const
 {
     target_node_indexes->clear();
     for (unsigned int i = 0; i < fNTargetNodes; i++) {
@@ -629,17 +629,17 @@ void KFMElectrostaticTreeBuilder_MPI::GetTargetNodeIndexes(std::vector<unsigned 
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void KFMElectrostaticTreeBuilder_MPI::DetermineTargetNodes()
+void KFMMagnetostaticTreeBuilder_MPI::DetermineTargetNodes()
 {
     //create the neighbor finder
-    KFMCubicSpaceNodeNeighborFinder<KFMELECTROSTATICS_DIM, KFMElectrostaticNodeObjects> neighbor_finder;
+    KFMCubicSpaceNodeNeighborFinder<KFMMAGNETOSTATICS_DIM, KFMMagnetostaticNodeObjects> neighbor_finder;
 
     //the primacy flag inspector (check if a node contains target points)
-    KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> primacy_inspector;
+    KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> primacy_inspector;
     primacy_inspector.SetFlagIndex(0);
     primacy_inspector.SetFlagValue(1);
 
-    std::vector<KFMElectrostaticNode*> neighbors;
+    std::vector<KFMMagnetostaticNode*> neighbors;
 
     //in this function we collect the neighbors of the source nodes
     fTargetNodeCollection.clear();
@@ -684,8 +684,8 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineTargetNodes()
     //determine the target region
     fTargetVolume.Clear();
     for (unsigned int i = 0; i < fNTargetNodes; i++) {
-        KFMCube<KFMELECTROSTATICS_DIM>* cube = nullptr;
-        cube = KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCube<KFMELECTROSTATICS_DIM>>::GetNodeObject(
+        KFMCube<KFMMAGNETOSTATICS_DIM>* cube = nullptr;
+        cube = KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCube<KFMMAGNETOSTATICS_DIM>>::GetNodeObject(
             fTargetNodeCollection[i]);
         fTargetVolume.AddCube(cube);
     }
@@ -694,7 +694,7 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineTargetNodes()
     //compute the set of nodes that are not in the target regions
     unsigned int n_children = fTree->GetRootNode()->GetNChildren();
     for (unsigned int i = 0; i < n_children; i++) {
-        KFMElectrostaticNode* node = fTree->GetRootNode()->GetChild(i);
+        KFMMagnetostaticNode* node = fTree->GetRootNode()->GetChild(i);
         bool non_target = true;
         for (auto& j : fTargetNodeCollection) {
             if (j == node) {
@@ -710,25 +710,25 @@ void KFMElectrostaticTreeBuilder_MPI::DetermineTargetNodes()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void KFMElectrostaticTreeBuilder_MPI::RemoveExtraneousData()
+void KFMMagnetostaticTreeBuilder_MPI::RemoveExtraneousData()
 {
     //restricting actions to non-source nodes
 
     //now we apply an actor which removes all identity sets from nodes
     //in the non source region
-    KFMNodeObjectRemover<KFMElectrostaticNodeObjects, KFMIdentitySet> id_set_remover;
+    KFMNodeObjectRemover<KFMMagnetostaticNodeObjects, KFMIdentitySet> id_set_remover;
     fTree->SetReducedActionCollection(&fNonSourceNodeCollection);
     fTree->RestrictActionBehavior(true);
     fTree->ApplyRecursiveAction(&id_set_remover);
 
     //remove unneed multipole moment sets
-    KFMNodeObjectRemover<KFMElectrostaticNodeObjects, KFMElectrostaticMultipoleSet> multipole_set_remover;
+    KFMNodeObjectRemover<KFMMagnetostaticNodeObjects, KFMMagnetostaticMultipoleSet> multipole_set_remover;
     fTree->SetReducedActionCollection(&fNonSourceNodeCollection);
     fTree->RestrictActionBehavior(true);
     fTree->ApplyRecursiveAction(&multipole_set_remover);
 
     //remove the source flags
-    KFMNodeChildToParentFlagValueInitializer<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> source_flag_init;
+    KFMNodeChildToParentFlagValueInitializer<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> source_flag_init;
     source_flag_init.SetFlagIndex(1);
     source_flag_init.SetFlagValue(0);
     fTree->SetReducedActionCollection(&fNonSourceNodeCollection);
@@ -736,7 +736,7 @@ void KFMElectrostaticTreeBuilder_MPI::RemoveExtraneousData()
     fTree->ApplyRecursiveAction(&source_flag_init);
 
     //make sure that root node is still listed as being a source containing node
-    KFMNodeChildToParentFlagValueInitializer<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS>
+    KFMNodeChildToParentFlagValueInitializer<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS>
         root_source_flag_init;
     root_source_flag_init.SetFlagIndex(1);
     root_source_flag_init.SetFlagValue(1);
@@ -745,17 +745,17 @@ void KFMElectrostaticTreeBuilder_MPI::RemoveExtraneousData()
     //now we restrict action to the non-target nodes
 
     //the node level condition
-    KFMLevelConditionActor<KFMElectrostaticNode> level_condition;
+    KFMLevelConditionActor<KFMMagnetostaticNode> level_condition;
     level_condition.SetLevel(1);
     level_condition.SetGreaterThan();
 
     //the flag value initializer
-    KFMNodeFlagValueInitializer<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> target_flag_init;
+    KFMNodeFlagValueInitializer<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> target_flag_init;
     target_flag_init.SetFlagIndex(0);
     target_flag_init.SetFlagValue(0);
 
     //conditional actor
-    KFMConditionalActor<KFMElectrostaticNode> conditional_actor;
+    KFMConditionalActor<KFMMagnetostaticNode> conditional_actor;
     conditional_actor.SetInspectingActor(&level_condition);
     conditional_actor.SetOperationalActor(&target_flag_init);
 
@@ -765,7 +765,7 @@ void KFMElectrostaticTreeBuilder_MPI::RemoveExtraneousData()
     fTree->ApplyRecursiveAction(&conditional_actor);
 
     //remove unneed local moment sets
-    KFMNodeObjectRemover<KFMElectrostaticNodeObjects, KFMElectrostaticLocalCoefficientSet> local_set_remover;
+    KFMNodeObjectRemover<KFMMagnetostaticNodeObjects, KFMMagnetostaticLocalCoefficientSet> local_set_remover;
     conditional_actor.SetOperationalActor(&local_set_remover);
     fTree->SetReducedActionCollection(&fNonTargetNodeCollection);
     fTree->RestrictActionBehavior(true);
@@ -775,13 +775,13 @@ void KFMElectrostaticTreeBuilder_MPI::RemoveExtraneousData()
     //which are in the non-target region, as they are unneeded
     //by this MPI process
 
-    KFMNodeObjectNullifier<KFMElectrostaticNodeObjects,
-                           KFMElectrostaticElementContainerBase<KFMELECTROSTATICS_DIM, KFMELECTROSTATICS_BASIS>>
+    KFMNodeObjectNullifier<KFMMagnetostaticNodeObjects,
+                           KFMMagnetostaticElementContainerBase<KFMMAGNETOSTATICS_DIM, KFMMAGNETOSTATICS_BASIS>>
         elementContainerNullifier;
-    KFMNodeObjectNullifier<KFMElectrostaticNodeObjects, KFMCubicSpaceTreeProperties<KFMELECTROSTATICS_DIM>>
+    KFMNodeObjectNullifier<KFMMagnetostaticNodeObjects, KFMCubicSpaceTreeProperties<KFMMAGNETOSTATICS_DIM>>
         treePropertyNullifier;
 
-    KFMRecursiveActor<KFMElectrostaticNode> recursiveActor;
+    KFMRecursiveActor<KFMMagnetostaticNode> recursiveActor;
 
     for (auto& i : fNonTargetNodeCollection) {
         //have to null out the pointer to the element container
@@ -796,45 +796,45 @@ void KFMElectrostaticTreeBuilder_MPI::RemoveExtraneousData()
         i->DeleteChildren();
 
         //reset the pointer to the element container for the top level nodes
-        KFMObjectRetriever<KFMElectrostaticNodeObjects,
-                           KFMElectrostaticElementContainerBase<KFMELECTROSTATICS_DIM,
-                                                                KFMELECTROSTATICS_BASIS>>::SetNodeObject(fContainer, i);
+        KFMObjectRetriever<KFMMagnetostaticNodeObjects,
+                           KFMMagnetostaticElementContainerBase<KFMMAGNETOSTATICS_DIM,
+                                                                KFMMAGNETOSTATICS_BASIS>>::SetNodeObject(fContainer, i);
 
         //reset the pointer to the cubic space tree properties for the top level nodes
-        KFMCubicSpaceTreeProperties<KFMELECTROSTATICS_DIM>* tree_prop = nullptr;
+        KFMCubicSpaceTreeProperties<KFMMAGNETOSTATICS_DIM>* tree_prop = nullptr;
         tree_prop =
-            KFMObjectRetriever<KFMElectrostaticNodeObjects,
-                               KFMCubicSpaceTreeProperties<KFMELECTROSTATICS_DIM>>::GetNodeObject(fTree->GetRootNode());
-        KFMObjectRetriever<KFMElectrostaticNodeObjects,
-                           KFMCubicSpaceTreeProperties<KFMELECTROSTATICS_DIM>>::SetNodeObject(tree_prop, i);
+            KFMObjectRetriever<KFMMagnetostaticNodeObjects,
+                               KFMCubicSpaceTreeProperties<KFMMAGNETOSTATICS_DIM>>::GetNodeObject(fTree->GetRootNode());
+        KFMObjectRetriever<KFMMagnetostaticNodeObjects,
+                           KFMCubicSpaceTreeProperties<KFMMAGNETOSTATICS_DIM>>::SetNodeObject(tree_prop, i);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 
-void KFMElectrostaticTreeBuilder_MPI::CollectDirectCallIdentitiesForPrimaryNodes()
+void KFMMagnetostaticTreeBuilder_MPI::CollectDirectCallIdentitiesForPrimaryNodes()
 {
     fTree->RestrictActionBehavior(false);
 
     //sort id sets
-    KFMElectrostaticIdentitySetSorter IDSorter;
+    KFMMagnetostaticIdentitySetSorter IDSorter;
     fTree->ApplyRecursiveAction(&IDSorter);
 
     //the primacy flag inspector
-    KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> primary_flag_condition;
+    KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> primary_flag_condition;
     primary_flag_condition.SetFlagIndex(0);
     primary_flag_condition.SetFlagValue(1);
 
     //we assume that the primary nodes have already been determined
     //create a conditional actor, which depends on node primacy
     //to construct the direct call lists
-    KFMConditionalActor<KFMElectrostaticNode> conditional_actor;
+    KFMConditionalActor<KFMMagnetostaticNode> conditional_actor;
     conditional_actor.SetInspectingActor(&primary_flag_condition);
 
     //create the lists of the external identity sets
     //(reduced memory alternative to explicitly creating the external id sets as above)
-    KFMElectrostaticIdentitySetListCreator IDListCreator;
+    KFMMagnetostaticIdentitySetListCreator IDListCreator;
     IDListCreator.SetZeroMaskSize(fZeroMaskSize);
     conditional_actor.SetOperationalActor(&IDListCreator);
     //apply action
@@ -843,7 +843,7 @@ void KFMElectrostaticTreeBuilder_MPI::CollectDirectCallIdentitiesForPrimaryNodes
     //now we create the lists of the collocation points
     //these are associated with the centroid of each electrostatic element
     //first we form a list of the centroids
-    std::vector<const KFMPoint<KFMELECTROSTATICS_DIM>*> centroids;
+    std::vector<const KFMPoint<KFMMAGNETOSTATICS_DIM>*> centroids;
     std::vector<unsigned int> centroid_ids;
     unsigned int n_elements = fContainer->GetNElements();
     for (unsigned int i = 0; i < n_elements; i++) {
@@ -853,7 +853,7 @@ void KFMElectrostaticTreeBuilder_MPI::CollectDirectCallIdentitiesForPrimaryNodes
         }
     }
 
-    KFMElectrostaticCollocationPointIdentitySetCreator cpid_creator;
+    KFMMagnetostaticCollocationPointIdentitySetCreator cpid_creator;
     cpid_creator.SetTree(fTree);
     cpid_creator.SortCollocationPoints(&centroids, &centroid_ids);
 }

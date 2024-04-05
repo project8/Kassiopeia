@@ -1,10 +1,10 @@
-#ifndef KFMElectrostaticElementContainer_HH__
-#define KFMElectrostaticElementContainer_HH__
+#ifndef KFMMagnetostaticElementContainer_HH__
+#define KFMMagnetostaticElementContainer_HH__
 
 #include "KFMBall.hh"
 #include "KFMBasisData.hh"
-#include "KFMElectrostaticElement.hh"
-#include "KFMElectrostaticElementContainerBase.hh"
+#include "KFMMagnetostaticElement.hh"
+#include "KFMMagnetostaticElementContainerBase.hh"
 #include "KFMObjectContainer.hh"
 #include "KFMPointCloud.hh"
 
@@ -13,8 +13,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticElementContainer.hh
-*@class KFMElectrostaticElementContainer
+*@file KFMMagnetostaticElementContainer.hh
+*@class KFMMagnetostaticElementContainer
 *@brief
 *@details
 *
@@ -25,10 +25,10 @@ namespace KEMField
 */
 
 template<unsigned int SpatialDimension, unsigned int BasisDimension>
-class KFMElectrostaticElementContainer : public KFMElectrostaticElementContainerBase<SpatialDimension, BasisDimension>
+class KFMMagnetostaticElementContainer : public KFMMagnetostaticElementContainerBase<SpatialDimension, BasisDimension>
 {
   public:
-    KFMElectrostaticElementContainer()
+    KFMMagnetostaticElementContainer()
     {
         fPointCloudContainer = new KFMObjectContainer<KFMPointCloud<SpatialDimension>>();
         fBoundingBallContainer = new KFMObjectContainer<KFMBall<SpatialDimension>>();
@@ -37,7 +37,7 @@ class KFMElectrostaticElementContainer : public KFMElectrostaticElementContainer
         fNElements = 0;
     }
 
-    ~KFMElectrostaticElementContainer() override
+    ~KFMMagnetostaticElementContainer() override
     {
         delete fPointCloudContainer;
         delete fBoundingBallContainer;
@@ -50,7 +50,7 @@ class KFMElectrostaticElementContainer : public KFMElectrostaticElementContainer
         return fNElements;
     };
 
-    void AddElectrostaticElement(const KFMElectrostaticElement<SpatialDimension, BasisDimension>& elem) override
+    void AddMagnetostaticElement(const KFMMagnetostaticElement<SpatialDimension, BasisDimension>& elem) override
     {
         fPointCloudContainer->AddObject(elem.GetPointCloud());
         fBoundingBallContainer->AddObject(elem.GetBoundingBall());
@@ -60,9 +60,9 @@ class KFMElectrostaticElementContainer : public KFMElectrostaticElementContainer
         fNElements++;
     }
 
-    KFMElectrostaticElement<SpatialDimension, BasisDimension> GetElectrostaticElement(unsigned int id) override
+    KFMMagnetostaticElement<SpatialDimension, BasisDimension> GetMagnetostaticElement(unsigned int id) override
     {
-        KFMElectrostaticElement<SpatialDimension, BasisDimension> elem;
+        KFMMagnetostaticElement<SpatialDimension, BasisDimension> elem;
         elem.SetPointCloud(*(GetPointCloud(id)));
         elem.SetBasisData(*(GetBasisData(id)));
         elem.SetBoundingBall(*(GetBoundingBall(id)));
@@ -172,4 +172,4 @@ class KFMElectrostaticElementContainer : public KFMElectrostaticElementContainer
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticElementContainer_H__ */
+#endif /* KFMMagnetostaticElementContainer_H__ */

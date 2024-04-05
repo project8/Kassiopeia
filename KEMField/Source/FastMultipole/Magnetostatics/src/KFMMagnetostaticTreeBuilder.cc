@@ -1,4 +1,4 @@
-#include "KFMElectrostaticTreeBuilder.hh"
+#include "KFMMagnetostaticTreeBuilder.hh"
 
 #include "KFMCompoundInspectingActor.hh"
 #include "KFMLeafConditionActor.hh"
@@ -12,24 +12,24 @@ namespace KEMField
 {
 
 //extracted electrode data
-void KFMElectrostaticTreeBuilder::SetElectrostaticElementContainer(
-    KFMElectrostaticElementContainerBase<KFMELECTROSTATICS_DIM, KFMELECTROSTATICS_BASIS>* container)
+void KFMMagnetostaticTreeBuilder::SetMagnetostaticElementContainer(
+    KFMMagnetostaticElementContainerBase<KFMMAGNETOSTATICS_DIM, KFMMAGNETOSTATICS_BASIS>* container)
 {
     fContainer = container;
 }
 
 
-KFMElectrostaticElementContainerBase<KFMELECTROSTATICS_DIM, KFMELECTROSTATICS_BASIS>*
-KFMElectrostaticTreeBuilder::GetElectrostaticElementContainer()
+KFMMagnetostaticElementContainerBase<KFMMAGNETOSTATICS_DIM, KFMMAGNETOSTATICS_BASIS>*
+KFMMagnetostaticTreeBuilder::GetMagnetostaticElementContainer()
 {
     return fContainer;
 }
 
 
-void KFMElectrostaticTreeBuilder::SetTree(KFMElectrostaticTree* tree)
+void KFMMagnetostaticTreeBuilder::SetTree(KFMMagnetostaticTree* tree)
 {
     fTree = tree;
-    KFMElectrostaticParameters params = tree->GetParameters();
+    KFMMagnetostaticParameters params = tree->GetParameters();
 
     fDegree = params.degree;
     fNTerms = (fDegree + 1) * (fDegree + 1);
@@ -53,45 +53,45 @@ void KFMElectrostaticTreeBuilder::SetTree(KFMElectrostaticTree* tree)
     }
 
     if (fVerbosity > 1) {
-        kfmout << "KFMElectrostaticTreeBuilder::SetParameters: top level divisions set to "
+        kfmout << "KFMMagnetostaticTreeBuilder::SetParameters: top level divisions set to "
                << params.top_level_divisions << kfmendl;
-        kfmout << "KFMElectrostaticTreeBuilder::SetParameters: divisions set to " << params.divisions << kfmendl;
-        kfmout << "KFMElectrostaticTreeBuilder::SetParameters: degree set to " << params.degree << kfmendl;
-        kfmout << "KFMElectrostaticTreeBuilder::SetParameters: zero mask size set to " << params.zeromask << kfmendl;
-        kfmout << "KFMElectrostaticTreeBuilder::SetParameters: max tree depth set to " << params.maximum_tree_depth
+        kfmout << "KFMMagnetostaticTreeBuilder::SetParameters: divisions set to " << params.divisions << kfmendl;
+        kfmout << "KFMMagnetostaticTreeBuilder::SetParameters: degree set to " << params.degree << kfmendl;
+        kfmout << "KFMMagnetostaticTreeBuilder::SetParameters: zero mask size set to " << params.zeromask << kfmendl;
+        kfmout << "KFMMagnetostaticTreeBuilder::SetParameters: max tree depth set to " << params.maximum_tree_depth
                << kfmendl;
 
         if (!(params.use_region_estimation)) {
-            kfmout << "KFMElectrostaticTreeBuilder::SetParameters: using user defined world cube volume" << kfmendl;
-            kfmout << "KFMElectrostaticTreeBuilder::SetParameters: world cube center set to (" << params.world_center_x
+            kfmout << "KFMMagnetostaticTreeBuilder::SetParameters: using user defined world cube volume" << kfmendl;
+            kfmout << "KFMMagnetostaticTreeBuilder::SetParameters: world cube center set to (" << params.world_center_x
                    << ", " << params.world_center_y << ", " << params.world_center_z << ") " << kfmendl;
-            kfmout << "KFMElectrostaticTreeBuilder::SetParameters: world cube side length set to ("
+            kfmout << "KFMMagnetostaticTreeBuilder::SetParameters: world cube side length set to ("
                    << params.world_length << kfmendl;
         }
         else {
-            kfmout << "KFMElectrostaticTreeBuilder::SetParameters: using region size estimation" << kfmendl;
-            kfmout << "KFMElectrostaticTreeBuilder::SetParameters: region expansion factor set to "
+            kfmout << "KFMMagnetostaticTreeBuilder::SetParameters: using region size estimation" << kfmendl;
+            kfmout << "KFMMagnetostaticTreeBuilder::SetParameters: region expansion factor set to "
                    << params.region_expansion_factor << kfmendl;
         }
     }
 }
 
-KFMElectrostaticTree* KFMElectrostaticTreeBuilder::GetTree()
+KFMMagnetostaticTree* KFMMagnetostaticTreeBuilder::GetTree()
 {
     return fTree;
 }
 
-void KFMElectrostaticTreeBuilder::ConstructRootNode()
+void KFMMagnetostaticTreeBuilder::ConstructRootNode()
 {
     if (fUseRegionEstimation) {
         if (fVerbosity > 2) {
-            kfmout << "KFMElectrostaticTreeBuilder::Initialize: Region size estimator running. " << kfmendl;
+            kfmout << "KFMMagnetostaticTreeBuilder::Initialize: Region size estimator running. " << kfmendl;
         }
 
         //the region size estimator
-        KFMElectrostaticRegionSizeEstimator regionSizeEstimator;
+        KFMMagnetostaticRegionSizeEstimator regionSizeEstimator;
 
-        regionSizeEstimator.SetElectrostaticElementContainer(fContainer);
+        regionSizeEstimator.SetMagnetostaticElementContainer(fContainer);
         regionSizeEstimator.ComputeEstimate();
         KFMCube<3> estimate = regionSizeEstimator.GetCubeEstimate();
 
@@ -99,9 +99,9 @@ void KFMElectrostaticTreeBuilder::ConstructRootNode()
         fWorldLength = fRegionSizeFactor * (estimate.GetLength());
 
         if (fVerbosity > 2) {
-            kfmout << "KFMElectrostaticTreeBuilder::Initialize: Estimated world cube center is (" << fWorldCenter[0]
+            kfmout << "KFMMagnetostaticTreeBuilder::Initialize: Estimated world cube center is (" << fWorldCenter[0]
                    << ", " << fWorldCenter[1] << ", " << fWorldCenter[2] << ")" << kfmendl;
-            kfmout << "KFMElectrostaticTreeBuilder::Initialize: Estimated world cube size length is " << fWorldLength
+            kfmout << "KFMMagnetostaticTreeBuilder::Initialize: Estimated world cube size length is " << fWorldLength
                    << kfmendl;
         }
     }
@@ -113,9 +113,9 @@ void KFMElectrostaticTreeBuilder::ConstructRootNode()
     unsigned int n_elements = fContainer->GetNElements();
 
     if (fVerbosity > 2) {
-        kfmout << "KFMElectrostaticTreeBuilder::ConstructRootNode: Constructing root node with center at (" << center[0]
+        kfmout << "KFMMagnetostaticTreeBuilder::ConstructRootNode: Constructing root node with center at (" << center[0]
                << ", " << center[1] << ", " << center[2] << ")." << kfmendl;
-        kfmout << "KFMElectrostaticTreeBuilder::ConstructRootNode: Root node has side length of " << fWorldLength
+        kfmout << "KFMMagnetostaticTreeBuilder::ConstructRootNode: Root node has side length of " << fWorldLength
                << " and contains " << n_elements << " boundary elements." << kfmendl;
     }
 
@@ -130,16 +130,16 @@ void KFMElectrostaticTreeBuilder::ConstructRootNode()
     tree_prop->SetDimensions(dim);
     tree_prop->SetTopLevelDimensions(top_level_dim);
 
-    KFMElectrostaticNode* root = fTree->GetRootNode();
+    KFMMagnetostaticNode* root = fTree->GetRootNode();
 
     //set the world volume
-    KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCube<3>>::SetNodeObject(world_volume, root);
+    KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCube<3>>::SetNodeObject(world_volume, root);
 
     //set the tree properties
-    KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMCubicSpaceTreeProperties<3>>::SetNodeObject(tree_prop, root);
+    KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMCubicSpaceTreeProperties<3>>::SetNodeObject(tree_prop, root);
 
     //set the element container
-    KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMElectrostaticElementContainerBase<3, 1>>::SetNodeObject(
+    KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMMagnetostaticElementContainerBase<3, 1>>::SetNodeObject(
         fContainer,
         root);
 
@@ -150,7 +150,7 @@ void KFMElectrostaticTreeBuilder::ConstructRootNode()
     }
 
     //set the id set
-    KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMIdentitySet>::SetNodeObject(root_list, root);
+    KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMIdentitySet>::SetNodeObject(root_list, root);
 
     //set basis node properties
     root->SetID(tree_prop->RegisterNode());
@@ -158,7 +158,7 @@ void KFMElectrostaticTreeBuilder::ConstructRootNode()
     root->SetParent(nullptr);
 }
 
-void KFMElectrostaticTreeBuilder::PerformSpatialSubdivision()
+void KFMMagnetostaticTreeBuilder::PerformSpatialSubdivision()
 {
     //conditions for subdivision of a node
     KFMInsertionCondition<3> basic_insertion_condition;
@@ -168,7 +168,7 @@ void KFMElectrostaticTreeBuilder::PerformSpatialSubdivision()
         //subdivision condition was unset, so we default to aggressive
         //since it is the only one which takes no paramters
         fSubdivisionCondition =
-            new KFMSubdivisionConditionAggressive<KFMELECTROSTATICS_DIM, KFMElectrostaticNodeObjects>();
+            new KFMSubdivisionConditionAggressive<KFMMAGNETOSTATICS_DIM, KFMMagnetostaticNodeObjects>();
         fSubdivisionConditionIsOwned = true;
     }
 
@@ -176,7 +176,7 @@ void KFMElectrostaticTreeBuilder::PerformSpatialSubdivision()
     fTree->SetSubdivisionCondition(fSubdivisionCondition);
 
     //things to do on a node after it has been visited by the progenitor
-    KFMCubicSpaceBallSorter<3, KFMElectrostaticNodeObjects> bball_sorter;
+    KFMCubicSpaceBallSorter<3, KFMMagnetostaticNodeObjects> bball_sorter;
     bball_sorter.SetInsertionCondition(&basic_insertion_condition);
     fTree->AddPostSubdivisionAction(&bball_sorter);
 
@@ -185,29 +185,29 @@ void KFMElectrostaticTreeBuilder::PerformSpatialSubdivision()
     bball_sorter.SetBoundingBallContainer(bballs);
 
     if (fVerbosity > 2) {
-        kfmout << "KFMElectrostaticTreeBuilder::PerformSpatialSubdivision: Subdividing region using the "
+        kfmout << "KFMMagnetostaticTreeBuilder::PerformSpatialSubdivision: Subdividing region using the "
                << fSubdivisionCondition->Name() << " strategy " << kfmendl;
     }
 
     fTree->ConstructTree();
 
     if (fVerbosity > 2) {
-        kfmout << "KFMElectrostaticTreeBuilder::PerformSpatialSubdivision: Done performing spatial subdivision. "
+        kfmout << "KFMMagnetostaticTreeBuilder::PerformSpatialSubdivision: Done performing spatial subdivision. "
                << kfmendl;
     }
 }
 
-void KFMElectrostaticTreeBuilder::FlagNonZeroMultipoleNodes()
+void KFMMagnetostaticTreeBuilder::FlagNonZeroMultipoleNodes()
 {
     //the condition (non-empty id set)
-    KFMNonEmptyIdentitySetActor<KFMElectrostaticNodeObjects> non_empty_condition;
+    KFMNonEmptyIdentitySetActor<KFMMagnetostaticNodeObjects> non_empty_condition;
 
     //the flag value initializer
-    KFMNodeChildToParentFlagValueInitializer<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> flag_init;
+    KFMNodeChildToParentFlagValueInitializer<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> flag_init;
     flag_init.SetFlagIndex(1);
     flag_init.SetFlagValue(1);
 
-    KFMConditionalActor<KFMElectrostaticNode> conditional_actor;
+    KFMConditionalActor<KFMMagnetostaticNode> conditional_actor;
 
     conditional_actor.SetInspectingActor(&non_empty_condition);
     conditional_actor.SetOperationalActor(&flag_init);
@@ -215,33 +215,33 @@ void KFMElectrostaticTreeBuilder::FlagNonZeroMultipoleNodes()
     fTree->ApplyRecursiveAction(&conditional_actor);
 }
 
-void KFMElectrostaticTreeBuilder::PerformAdjacencySubdivision()
+void KFMMagnetostaticTreeBuilder::PerformAdjacencySubdivision()
 {
     //adjacency progenation condition
-    KFMElectrostaticAdjacencyProgenitor adjacencyProgenitor;
+    KFMMagnetostaticAdjacencyProgenitor adjacencyProgenitor;
     adjacencyProgenitor.SetZeroMaskSize(fZeroMaskSize);
 
     //the condition that we use is that the node's adjacent to a node which
     //has non-zero multipole moments, and is not a leaf node
 
     //leaf condition inspector
-    KFMLeafConditionActor<KFMElectrostaticNode> leaf_condition;
+    KFMLeafConditionActor<KFMMagnetostaticNode> leaf_condition;
     leaf_condition.SetFalseOnLeafNodes();
 
     //the non-zero multipole flag inspector
-    KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> multipole_flag_condition;
+    KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> multipole_flag_condition;
     multipole_flag_condition.SetFlagIndex(1);
     multipole_flag_condition.SetFlagValue(1);
 
     //non-zero multipole flag inspector for all of the node's children
-    KFMNodeParentToChildFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS>
+    KFMNodeParentToChildFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS>
         child_multipole_flag_condition;
     child_multipole_flag_condition.SetFlagIndex(1);
     child_multipole_flag_condition.SetFlagValue(1);
     child_multipole_flag_condition.UseOrCondition();
 
     //compound condition
-    KFMCompoundInspectingActor<KFMElectrostaticNode> compound_inspector;
+    KFMCompoundInspectingActor<KFMMagnetostaticNode> compound_inspector;
     compound_inspector.UseAndCondition();
 
     compound_inspector.AddInspectingActor(&leaf_condition);
@@ -249,7 +249,7 @@ void KFMElectrostaticTreeBuilder::PerformAdjacencySubdivision()
     compound_inspector.AddInspectingActor(&child_multipole_flag_condition);
 
     //now we constuct the conditional actor
-    KFMConditionalActor<KFMElectrostaticNode> conditional_actor;
+    KFMConditionalActor<KFMMagnetostaticNode> conditional_actor;
 
     conditional_actor.SetInspectingActor(&compound_inspector);
     conditional_actor.SetOperationalActor(&adjacencyProgenitor);
@@ -258,20 +258,20 @@ void KFMElectrostaticTreeBuilder::PerformAdjacencySubdivision()
 
     if (fVerbosity > 3) {
         kfmout
-            << "KFMElectrostaticTreeBuilder::PerformAdjacencySubdivision: Done performing subdivision of nodes satisfying adjacency condition."
+            << "KFMMagnetostaticTreeBuilder::PerformAdjacencySubdivision: Done performing subdivision of nodes satisfying adjacency condition."
             << kfmendl;
     }
 }
 
-void KFMElectrostaticTreeBuilder::FlagPrimaryNodes()
+void KFMMagnetostaticTreeBuilder::FlagPrimaryNodes()
 {
     //for charge density solving we need to flag nodes which contain element centroids
     //(these get the 'primary' status flag)
 
-    KFMElectrostaticTreeNavigator navigator;
+    KFMMagnetostaticTreeNavigator navigator;
 
     //the flag value initializer
-    KFMNodeChildToParentFlagValueInitializer<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> flag_init;
+    KFMNodeChildToParentFlagValueInitializer<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> flag_init;
     flag_init.SetFlagIndex(0);
     flag_init.SetFlagValue(1);
 
@@ -283,62 +283,62 @@ void KFMElectrostaticTreeBuilder::FlagPrimaryNodes()
         navigator.ApplyAction(fTree->GetRootNode());
 
         if (navigator.Found()) {
-            KFMElectrostaticNode* leaf_node = navigator.GetLeafNode();
+            KFMMagnetostaticNode* leaf_node = navigator.GetLeafNode();
             flag_init.ApplyAction(leaf_node);
         }
         else {
             kfmout
-                << "KFMElectrostaticBoundaryIntegrator::FlagPrimaryNodes: Error, element centroid not found in region."
+                << "KFMMagnetostaticBoundaryIntegrator::FlagPrimaryNodes: Error, element centroid not found in region."
                 << kfmendl;
             kfmexit(1);
         }
     }
 
     if (fVerbosity > 2) {
-        kfmout << "KFMElectrostaticTreeBuilder::FlagPrimaryNodes: Done flagging primary nodes." << kfmendl;
+        kfmout << "KFMMagnetostaticTreeBuilder::FlagPrimaryNodes: Done flagging primary nodes." << kfmendl;
     }
 }
 
-void KFMElectrostaticTreeBuilder::CollectDirectCallIdentities()
+void KFMMagnetostaticTreeBuilder::CollectDirectCallIdentities()
 {
     //sorter for id sets
-    KFMElectrostaticIdentitySetSorter IDSorter;
+    KFMMagnetostaticIdentitySetSorter IDSorter;
     fTree->ApplyRecursiveAction(&IDSorter);
 
     //create the lists of the external identity sets
     //(reduced memory alternative to explicitly creating the external id sets as above)
-    KFMElectrostaticIdentitySetListCreator IDListCreator;
+    KFMMagnetostaticIdentitySetListCreator IDListCreator;
     IDListCreator.SetZeroMaskSize(fZeroMaskSize);
     fTree->ApplyCorecursiveAction(&IDListCreator);
 
     if (fVerbosity > 3) {
         kfmout
-            << "KFMElectrostaticTreeBuilder::CollectDirectCallIdentities: Done collecting element identities of node direct calls. Max number of direct calls from any node is "
+            << "KFMMagnetostaticTreeBuilder::CollectDirectCallIdentities: Done collecting element identities of node direct calls. Max number of direct calls from any node is "
             << kfmendl;
     }
 }
 
-void KFMElectrostaticTreeBuilder::CollectDirectCallIdentitiesForPrimaryNodes()
+void KFMMagnetostaticTreeBuilder::CollectDirectCallIdentitiesForPrimaryNodes()
 {
     //sort id sets
-    KFMElectrostaticIdentitySetSorter IDSorter;
+    KFMMagnetostaticIdentitySetSorter IDSorter;
 
     fTree->ApplyRecursiveAction(&IDSorter);
 
     //the primacy flag inspector
-    KFMNodeFlagValueInspector<KFMElectrostaticNodeObjects, KFMELECTROSTATICS_FLAGS> primary_flag_condition;
+    KFMNodeFlagValueInspector<KFMMagnetostaticNodeObjects, KFMMAGNETOSTATICS_FLAGS> primary_flag_condition;
     primary_flag_condition.SetFlagIndex(0);
     primary_flag_condition.SetFlagValue(1);
 
     //we assume that the primary nodes have already been determined
     //create a conditional actor, which depends on node primacy
     //to construct the direct call lists
-    KFMConditionalActor<KFMElectrostaticNode> conditional_actor;
+    KFMConditionalActor<KFMMagnetostaticNode> conditional_actor;
     conditional_actor.SetInspectingActor(&primary_flag_condition);
 
     //create the lists of the external identity sets
     //(reduced memory alternative to explicitly creating the external id sets as above)
-    KFMElectrostaticIdentitySetListCreator IDListCreator;
+    KFMMagnetostaticIdentitySetListCreator IDListCreator;
     IDListCreator.SetZeroMaskSize(fZeroMaskSize);
     conditional_actor.SetOperationalActor(&IDListCreator);
     //apply action
@@ -347,19 +347,19 @@ void KFMElectrostaticTreeBuilder::CollectDirectCallIdentitiesForPrimaryNodes()
     //now we create the lists of the collocation points
     //these are associated with the centroid of each electrostatic element
     //first we form a list of the centroids
-    std::vector<const KFMPoint<KFMELECTROSTATICS_DIM>*> centroids;
+    std::vector<const KFMPoint<KFMMAGNETOSTATICS_DIM>*> centroids;
     unsigned int n_elements = fContainer->GetNElements();
     for (unsigned int i = 0; i < n_elements; i++) {
         centroids.push_back(fContainer->GetCentroid(i));
     }
 
-    KFMElectrostaticCollocationPointIdentitySetCreator cpid_creator;
+    KFMMagnetostaticCollocationPointIdentitySetCreator cpid_creator;
     cpid_creator.SetTree(fTree);
     cpid_creator.SortCollocationPoints(&centroids);
 
     if (fVerbosity > 3) {
         kfmout
-            << "KFMElectrostaticTreeBuilder::CollectDirectCallIdentitiesForPrimaryNodes: Done collecting element identities of primary node direct calls."
+            << "KFMMagnetostaticTreeBuilder::CollectDirectCallIdentitiesForPrimaryNodes: Done collecting element identities of primary node direct calls."
             << kfmendl;
     }
 }

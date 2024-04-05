@@ -1,8 +1,8 @@
-#ifndef KFMElectrostaticTreeData_HH__
-#define KFMElectrostaticTreeData_HH__
+#ifndef KFMMagnetostaticTreeData_HH__
+#define KFMMagnetostaticTreeData_HH__
 
-#include "KFMElectrostaticNode.hh"
-#include "KFMElectrostaticTree.hh"
+#include "KFMMagnetostaticNode.hh"
+#include "KFMMagnetostaticTree.hh"
 #include "KFMNode.hh"
 #include "KFMNodeData.hh"
 #include "KSAStructuredASCIIHeaders.hh"
@@ -15,8 +15,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticTreeData.hh
-*@class KFMElectrostaticTreeData
+*@file KFMMagnetostaticTreeData.hh
+*@class KFMMagnetostaticTreeData
 *@brief
 *@details
 *
@@ -26,10 +26,10 @@ namespace KEMField
 *
 */
 
-class KFMElectrostaticTreeData : public KSAInputOutputObject
+class KFMMagnetostaticTreeData : public KSAInputOutputObject
 {
   public:
-    KFMElectrostaticTreeData()
+    KFMMagnetostaticTreeData()
     {
         fTopLevelDivisions = 0;
         fDivisions = 0;
@@ -39,7 +39,7 @@ class KFMElectrostaticTreeData : public KSAInputOutputObject
         fInsertionRatio = 0;
         fNNodes = 0;
     };
-    ~KFMElectrostaticTreeData() override = default;
+    ~KFMMagnetostaticTreeData() override = default;
     ;
 
     std::string GetTreeID() const
@@ -75,13 +75,13 @@ class KFMElectrostaticTreeData : public KSAInputOutputObject
     };
 
 
-    void GetLocalCoefficients(std::vector<KFMElectrostaticLocalCoefficientSet*>* local_coeff) const;
-    void SetLocalCoefficients(const std::vector<KFMElectrostaticLocalCoefficientSet*>* local_coeff);
-    const std::vector<KFMElectrostaticLocalCoefficientSet*>* GetLocalCoefficientPointer() const
+    void GetLocalCoefficients(std::vector<KFMMagnetostaticLocalCoefficientSet*>* local_coeff) const;
+    void SetLocalCoefficients(const std::vector<KFMMagnetostaticLocalCoefficientSet*>* local_coeff);
+    const std::vector<KFMMagnetostaticLocalCoefficientSet*>* GetLocalCoefficientPointer() const
     {
         return &fLocalCoefficients;
     };
-    std::vector<KFMElectrostaticLocalCoefficientSet*>* GetLocalCoefficientPointer()
+    std::vector<KFMMagnetostaticLocalCoefficientSet*>* GetLocalCoefficientPointer()
     {
         return &fLocalCoefficients;
     };
@@ -201,11 +201,11 @@ class KFMElectrostaticTreeData : public KSAInputOutputObject
     //IO
     virtual std::string ClassName() const
     {
-        return std::string("KFMElectrostaticTreeData");
+        return std::string("KFMMagnetostaticTreeData");
     };
     static std::string Name()
     {
-        return std::string("KFMElectrostaticTreeData");
+        return std::string("KFMMagnetostaticTreeData");
     };
     void DefineOutputNode(KSAOutputNode* node) const override;
     void DefineInputNode(KSAInputNode* node) override;
@@ -226,7 +226,7 @@ class KFMElectrostaticTreeData : public KSAInputOutputObject
     std::vector<KFMNodeData> fFlattenedTree;
 
     std::vector<int> fLocalCoefficientsNodeIDs;
-    std::vector<KFMElectrostaticLocalCoefficientSet*> fLocalCoefficients;
+    std::vector<KFMMagnetostaticLocalCoefficientSet*> fLocalCoefficients;
 
     std::vector<int> fIdentitySetNodeIDs;
     std::vector<KFMIdentitySet*> fIdentitySets;
@@ -236,7 +236,7 @@ class KFMElectrostaticTreeData : public KSAInputOutputObject
 };
 
 
-template<typename Stream> Stream& operator>>(Stream& s, KFMElectrostaticTreeData& aData)
+template<typename Stream> Stream& operator>>(Stream& s, KFMMagnetostaticTreeData& aData)
 {
     s.PreStreamInAction(aData);
 
@@ -294,13 +294,13 @@ template<typename Stream> Stream& operator>>(Stream& s, KFMElectrostaticTreeData
         local_coeff_node_ids->push_back(id);
     }
 
-    std::vector<KFMElectrostaticLocalCoefficientSet*>* local_coeff = aData.GetLocalCoefficientPointer();
+    std::vector<KFMMagnetostaticLocalCoefficientSet*>* local_coeff = aData.GetLocalCoefficientPointer();
     unsigned int local_coeff_size;
     s >> local_coeff_size;
     local_coeff->resize(0);
     local_coeff->reserve(local_coeff_size);
     for (unsigned int i = 0; i < local_coeff_size; i++) {
-        auto* set = new KFMElectrostaticLocalCoefficientSet();
+        auto* set = new KFMMagnetostaticLocalCoefficientSet();
         s >> *set;
         local_coeff->push_back(set);
     }
@@ -354,7 +354,7 @@ template<typename Stream> Stream& operator>>(Stream& s, KFMElectrostaticTreeData
     return s;
 }
 
-template<typename Stream> Stream& operator<<(Stream& s, const KFMElectrostaticTreeData& aData)
+template<typename Stream> Stream& operator<<(Stream& s, const KFMMagnetostaticTreeData& aData)
 {
     s.PreStreamOutAction(aData);
 
@@ -383,7 +383,7 @@ template<typename Stream> Stream& operator<<(Stream& s, const KFMElectrostaticTr
         s << (*local_coeff_node_ids)[i];
     }
 
-    const std::vector<KFMElectrostaticLocalCoefficientSet*>* local_coeff = aData.GetLocalCoefficientPointer();
+    const std::vector<KFMMagnetostaticLocalCoefficientSet*>* local_coeff = aData.GetLocalCoefficientPointer();
     unsigned int local_coeff_size = local_coeff->size();
     s << local_coeff_size;
     for (unsigned int i = 0; i < local_coeff_size; i++) {
@@ -426,8 +426,8 @@ template<typename Stream> Stream& operator<<(Stream& s, const KFMElectrostaticTr
     return s;
 }
 
-DefineKSAClassName(KFMElectrostaticTreeData)
+DefineKSAClassName(KFMMagnetostaticTreeData)
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticTreeData_H__ */
+#endif /* KFMMagnetostaticTreeData_H__ */

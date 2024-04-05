@@ -1,8 +1,8 @@
-#ifndef KFMElectrostaticNodeInspector_H
-#define KFMElectrostaticNodeInspector_H
+#ifndef KFMMagnetostaticNodeInspector_H
+#define KFMMagnetostaticNodeInspector_H
 
 
-#include "KFMElectrostaticNode.hh"
+#include "KFMMagnetostaticNode.hh"
 #include "KFMNodeActor.hh"
 #include "KFMObjectRetriever.hh"
 
@@ -16,8 +16,8 @@ namespace KEMField
 
 /**
 *
-*@file KFMElectrostaticNodeInspector.hh
-*@class KFMElectrostaticNodeInspector
+*@file KFMMagnetostaticNodeInspector.hh
+*@class KFMMagnetostaticNodeInspector
 *@brief
 *@details
 *
@@ -27,13 +27,13 @@ namespace KEMField
 *
 */
 
-class KFMElectrostaticNodeInspector : public KFMNodeActor<KFMElectrostaticNode>
+class KFMMagnetostaticNodeInspector : public KFMNodeActor<KFMMagnetostaticNode>
 {
   public:
-    KFMElectrostaticNodeInspector();
-    ~KFMElectrostaticNodeInspector() override;
+    KFMMagnetostaticNodeInspector();
+    ~KFMMagnetostaticNodeInspector() override;
 
-    void ApplyAction(KFMElectrostaticNode* node) override;
+    void ApplyAction(KFMMagnetostaticNode* node) override;
     void Print();
 
   private:
@@ -50,4 +50,4 @@ class KFMElectrostaticNodeInspector : public KFMNodeActor<KFMElectrostaticNode>
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticNodeInspector_H */
+#endif /* KFMMagnetostaticNodeInspector_H */

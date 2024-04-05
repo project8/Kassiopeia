@@ -1,10 +1,10 @@
-#ifndef KFMElectrostaticNearFieldToLocalCoefficientCalculator_HH__
-#define KFMElectrostaticNearFieldToLocalCoefficientCalculator_HH__
+#ifndef KFMMagnetostaticNearFieldToLocalCoefficientCalculator_HH__
+#define KFMMagnetostaticNearFieldToLocalCoefficientCalculator_HH__
 
-#include "KFMElectrostaticElementContainerBase.hh"
-#include "KFMElectrostaticLocalCoefficientCalculatorNumeric.hh"
-#include "KFMElectrostaticLocalCoefficientSet.hh"
-#include "KFMElectrostaticNode.hh"
+#include "KFMMagnetostaticElementContainerBase.hh"
+#include "KFMMagnetostaticLocalCoefficientCalculatorNumeric.hh"
+#include "KFMMagnetostaticLocalCoefficientSet.hh"
+#include "KFMMagnetostaticNode.hh"
 #include "KFMNodeActor.hh"
 
 namespace KEMField
@@ -12,8 +12,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticNearFieldToLocalCoefficientCalculator.hh
-*@class KFMElectrostaticNearFieldToLocalCoefficientCalculator
+*@file KFMMagnetostaticNearFieldToLocalCoefficientCalculator.hh
+*@class KFMMagnetostaticNearFieldToLocalCoefficientCalculator
 *@brief
 *@details
 *
@@ -24,23 +24,23 @@ namespace KEMField
 */
 
 
-class KFMElectrostaticNearFieldToLocalCoefficientCalculator : public KFMNodeActor<KFMElectrostaticNode>
+class KFMMagnetostaticNearFieldToLocalCoefficientCalculator : public KFMNodeActor<KFMMagnetostaticNode>
 {
   public:
-    KFMElectrostaticNearFieldToLocalCoefficientCalculator();
-    ~KFMElectrostaticNearFieldToLocalCoefficientCalculator() override;
+    KFMMagnetostaticNearFieldToLocalCoefficientCalculator();
+    ~KFMMagnetostaticNearFieldToLocalCoefficientCalculator() override;
 
     void SetDegree(int l_max);
     void SetNumberOfQuadratureTerms(unsigned int n);
 
     void Initialize();
 
-    void SetElectrostaticElementContainer(KFMElectrostaticElementContainerBase<3, 1>* elementContainer)
+    void SetMagnetostaticElementContainer(KFMMagnetostaticElementContainerBase<3, 1>* elementContainer)
     {
         fElementContainer = elementContainer;
     }
 
-    void ApplyAction(KFMElectrostaticNode* node) override;
+    void ApplyAction(KFMMagnetostaticNode* node) override;
 
   private:
     unsigned int fDegree;
@@ -48,9 +48,9 @@ class KFMElectrostaticNearFieldToLocalCoefficientCalculator : public KFMNodeActo
 
     double fConversionFactor;
 
-    KFMElectrostaticLocalCoefficientCalculatorNumeric* fLocalCoeffCalc;
-    KFMElectrostaticElementContainerBase<3, 1>* fElementContainer;
-    mutable KFMElectrostaticLocalCoefficientSet fTempMoments;
+    KFMMagnetostaticLocalCoefficientCalculatorNumeric* fLocalCoeffCalc;
+    KFMMagnetostaticElementContainerBase<3, 1>* fElementContainer;
+    mutable KFMMagnetostaticLocalCoefficientSet fTempMoments;
     std::vector<unsigned int> fElementsToRemove;
     std::vector<unsigned int> fElementsToKeep;
 };
@@ -58,4 +58,4 @@ class KFMElectrostaticNearFieldToLocalCoefficientCalculator : public KFMNodeActo
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticNearFieldToLocalCoefficientCalculator_H__ */
+#endif /* KFMMagnetostaticNearFieldToLocalCoefficientCalculator_H__ */

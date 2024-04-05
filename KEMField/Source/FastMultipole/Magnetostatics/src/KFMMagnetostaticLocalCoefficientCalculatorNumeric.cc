@@ -1,17 +1,17 @@
-#include "KFMElectrostaticLocalCoefficientCalculatorNumeric.hh"
+#include "KFMMagnetostaticLocalCoefficientCalculatorNumeric.hh"
 
 namespace KEMField
 {
 
 
-KFMElectrostaticLocalCoefficientCalculatorNumeric::KFMElectrostaticLocalCoefficientCalculatorNumeric()
+KFMMagnetostaticLocalCoefficientCalculatorNumeric::KFMMagnetostaticLocalCoefficientCalculatorNumeric()
 {
     fNumInt1D = new KVMPathIntegral<2>();
     fNumInt2D = new KVMSurfaceIntegral<2>();
 
     fSolidHarmonicWrapper =
-        new KVMFieldWrapper<KFMElectrostaticLocalCoefficientCalculatorNumeric,
-                            &KFMElectrostaticLocalCoefficientCalculatorNumeric::IrregularSolidHarmonic>(this, 3, 2);
+        new KVMFieldWrapper<KFMMagnetostaticLocalCoefficientCalculatorNumeric,
+                            &KFMMagnetostaticLocalCoefficientCalculatorNumeric::IrregularSolidHarmonic>(this, 3, 2);
 
     fLine = new KVMLineSegment();
     fTriangle = new KVMTriangularSurface();
@@ -25,7 +25,7 @@ KFMElectrostaticLocalCoefficientCalculatorNumeric::KFMElectrostaticLocalCoeffici
     fSolidHarmonics = nullptr;
 }
 
-KFMElectrostaticLocalCoefficientCalculatorNumeric::~KFMElectrostaticLocalCoefficientCalculatorNumeric()
+KFMMagnetostaticLocalCoefficientCalculatorNumeric::~KFMMagnetostaticLocalCoefficientCalculatorNumeric()
 {
     delete fNumInt1D;
     delete fNumInt2D;
@@ -36,7 +36,7 @@ KFMElectrostaticLocalCoefficientCalculatorNumeric::~KFMElectrostaticLocalCoeffic
 }
 
 
-void KFMElectrostaticLocalCoefficientCalculatorNumeric::SetDegree(int l_max)
+void KFMMagnetostaticLocalCoefficientCalculatorNumeric::SetDegree(int l_max)
 {
     fDegree = std::abs(l_max);
     fSize = (fDegree + 1) * (fDegree + 1);
@@ -46,13 +46,13 @@ void KFMElectrostaticLocalCoefficientCalculatorNumeric::SetDegree(int l_max)
     fSolidHarmonics = new std::complex<double>[fSize];
 }
 
-void KFMElectrostaticLocalCoefficientCalculatorNumeric::SetNumberOfQuadratureTerms(unsigned int n)
+void KFMMagnetostaticLocalCoefficientCalculatorNumeric::SetNumberOfQuadratureTerms(unsigned int n)
 {
     fNumInt1D->SetNTerms(n);
     fNumInt2D->SetNTerms(n);
 }
 
-bool KFMElectrostaticLocalCoefficientCalculatorNumeric::ConstructExpansion(double* target_origin,
+bool KFMMagnetostaticLocalCoefficientCalculatorNumeric::ConstructExpansion(double* target_origin,
                                                                            const KFMPointCloud<3>* vertices,
                                                                            KFMScalarMultipoleExpansion* moments) const
 {
@@ -167,20 +167,20 @@ bool KFMElectrostaticLocalCoefficientCalculatorNumeric::ConstructExpansion(doubl
         }
         else {
             kfmout
-                << "KFMElectrostaticLocalCoefficientCalculatorNumeric::ConstructExpansion: Warning, electrode type not recognized"
+                << "KFMMagnetostaticLocalCoefficientCalculatorNumeric::ConstructExpansion: Warning, electrode type not recognized"
                 << std::endl;
             return false;
         };
     }
     else {
         kfmout
-            << "KFMElectrostaticMultipoleCalculatorAnalytic::ConstructExpansion: Warning, Primitive ID is corrupt or electrode does not exist"
+            << "KFMMagnetostaticMultipoleCalculatorAnalytic::ConstructExpansion: Warning, Primitive ID is corrupt or electrode does not exist"
             << std::endl;
         return false;
     }
 }
 
-void KFMElectrostaticLocalCoefficientCalculatorNumeric::IrregularSolidHarmonic(const double* point,
+void KFMMagnetostaticLocalCoefficientCalculatorNumeric::IrregularSolidHarmonic(const double* point,
                                                                                double* result) const
 {
     fDel[0] = point[0] - fOrigin[0];

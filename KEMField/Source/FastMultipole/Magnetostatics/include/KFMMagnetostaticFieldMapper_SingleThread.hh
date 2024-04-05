@@ -1,20 +1,20 @@
-#ifndef KFMElectrostaticFieldMapper_SingleThread_HH__
-#define KFMElectrostaticFieldMapper_SingleThread_HH__
+#ifndef KFMMagnetostaticFieldMapper_SingleThread_HH__
+#define KFMMagnetostaticFieldMapper_SingleThread_HH__
 
-#include "KFMElectrostaticElementContainer.hh"
-#include "KFMElectrostaticMultipoleBatchCalculatorBase.hh"
-#include "KFMElectrostaticNode.hh"
-#include "KFMElectrostaticParameters.hh"
-#include "KFMElectrostaticRegionSizeEstimator.hh"
-#include "KFMElectrostaticTree.hh"
+#include "KFMMagnetostaticElementContainer.hh"
+#include "KFMMagnetostaticMultipoleBatchCalculatorBase.hh"
+#include "KFMMagnetostaticNode.hh"
+#include "KFMMagnetostaticParameters.hh"
+#include "KFMMagnetostaticRegionSizeEstimator.hh"
+#include "KFMMagnetostaticTree.hh"
 #include "KFMNodeObjectRemover.hh"
 #include "KFMObjectRetriever.hh"
 
 
 /*
 *
-*@file KFMElectrostaticFieldMapper_SingleThread.hh
-*@class KFMElectrostaticFieldMapper_SingleThread
+*@file KFMMagnetostaticFieldMapper_SingleThread.hh
+*@class KFMMagnetostaticFieldMapper_SingleThread
 *@brief helper class to apply actions to a tree
 *@details
 *
@@ -28,20 +28,20 @@ namespace KEMField
 {
 
 
-class KFMElectrostaticFieldMapper_SingleThread
+class KFMMagnetostaticFieldMapper_SingleThread
 {
   public:
-    KFMElectrostaticFieldMapper_SingleThread();
-    virtual ~KFMElectrostaticFieldMapper_SingleThread();
+    KFMMagnetostaticFieldMapper_SingleThread();
+    virtual ~KFMMagnetostaticFieldMapper_SingleThread();
 
     //extracted electrode data
-    void SetElectrostaticElementContainer(KFMElectrostaticElementContainerBase<3, 1>* container)
+    void SetMagnetostaticElementContainer(KFMMagnetostaticElementContainerBase<3, 1>* container)
     {
         fContainer = container;
     };
 
     //access to the region tree
-    void SetTree(KFMElectrostaticTree* tree);
+    void SetTree(KFMMagnetostaticTree* tree);
 
     void Initialize();
 
@@ -49,7 +49,7 @@ class KFMElectrostaticFieldMapper_SingleThread
 
   protected:
     //operations
-    void SetParameters(const KFMElectrostaticParameters& params);
+    void SetParameters(const KFMMagnetostaticParameters& params);
     void AssociateElementsAndNodes();
     void InitializeMultipoleMoments();
     void ComputeMultipoleMoments();
@@ -70,37 +70,37 @@ class KFMElectrostaticFieldMapper_SingleThread
     double fWorldLength;
 
     //the tree object that the manager is to construct
-    KFMElectrostaticTree* fTree;
+    KFMMagnetostaticTree* fTree;
 
     //element node associator
-    KFMElectrostaticElementNodeAssociator* fElementNodeAssociator;
+    KFMMagnetostaticElementNodeAssociator* fElementNodeAssociator;
     //the multipole calculator
-    KFMElectrostaticMultipoleBatchCalculatorBase* fBatchCalc;
+    KFMMagnetostaticMultipoleBatchCalculatorBase* fBatchCalc;
     //the element's multipole distributor
-    KFMElectrostaticElementMultipoleDistributor* fMultipoleDistributor;
+    KFMMagnetostaticElementMultipoleDistributor* fMultipoleDistributor;
 
     //the local coefficient initializer
-    KFMElectrostaticLocalCoefficientInitializer* fLocalCoeffInitializer;
+    KFMMagnetostaticLocalCoefficientInitializer* fLocalCoeffInitializer;
 
     //the multipole coefficient initializer
-    KFMElectrostaticMultipoleInitializer* fMultipoleInitializer;
+    KFMMagnetostaticMultipoleInitializer* fMultipoleInitializer;
 
     //the multipole up converter
-    KFMElectrostaticRemoteToRemoteConverter* fM2MConverter;
+    KFMMagnetostaticRemoteToRemoteConverter* fM2MConverter;
 
     //the local coefficient calculator
-    //        KFMElectrostaticRemoteToLocalConverter* fM2LConverter;
-    KFMElectrostaticRemoteToLocalConverterInterface* fM2LConverterInterface;
+    //        KFMMagnetostaticRemoteToLocalConverter* fM2LConverter;
+    KFMMagnetostaticRemoteToLocalConverterInterface* fM2LConverterInterface;
 
     //the local coefficient down converter
-    KFMElectrostaticLocalToLocalConverter* fL2LConverter;
+    KFMMagnetostaticLocalToLocalConverter* fL2LConverter;
 
     //container to the eletrostatic elements
-    KFMElectrostaticElementContainerBase<3, 1>* fContainer;
+    KFMMagnetostaticElementContainerBase<3, 1>* fContainer;
 };
 
 
 }  // namespace KEMField
 
 
-#endif /* KFMElectrostaticFieldMapper_SingleThread_H__ */
+#endif /* KFMMagnetostaticFieldMapper_SingleThread_H__ */

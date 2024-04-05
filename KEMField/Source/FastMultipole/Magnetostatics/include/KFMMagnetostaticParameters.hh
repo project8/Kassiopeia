@@ -1,13 +1,13 @@
-#ifndef KFMElectrostaticParameters_HH__
-#define KFMElectrostaticParameters_HH__
+#ifndef KFMMagnetostaticParameters_HH__
+#define KFMMagnetostaticParameters_HH__
 
 #include "KFMSubdivisionStrategy.hh"
 #include "KThreeVector_KEMField.hh"
 
 /*
 *
-*@file KFMElectrostaticParameters.hh
-*@class KFMElectrostaticParameters
+*@file KFMMagnetostaticParameters.hh
+*@class KFMMagnetostaticParameters
 *@brief
 *@details
 *
@@ -21,9 +21,9 @@
 namespace KEMField
 {
 
-struct KFMElectrostaticParameters
+struct KFMMagnetostaticParameters
 {
-    KFMElectrostaticParameters() :
+    KFMMagnetostaticParameters() :
         strategy(KFMSubdivisionStrategy::Aggressive),  //tree construction strategy, default is aggressive
         top_level_divisions(2),                        //number of divisions applied to root node
         divisions(2),                                  //number of divisions applied to all child nodes
@@ -66,7 +66,7 @@ struct KFMElectrostaticParameters
 };
 
 
-template<typename Stream> Stream& operator>>(Stream& s, KFMElectrostaticParameters& p)
+template<typename Stream> Stream& operator>>(Stream& s, KFMMagnetostaticParameters& p)
 {
     s.PreStreamInAction(p);
 
@@ -115,7 +115,7 @@ template<typename Stream> Stream& operator>>(Stream& s, KFMElectrostaticParamete
     return s;
 }
 
-template<typename Stream> Stream& operator<<(Stream& s, const KFMElectrostaticParameters& p)
+template<typename Stream> Stream& operator<<(Stream& s, const KFMMagnetostaticParameters& p)
 {
     s.PreStreamOutAction(p);
 
@@ -170,4 +170,4 @@ template<typename Stream> Stream& operator<<(Stream& s, const KFMElectrostaticPa
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticParameters_H__ */
+#endif /* KFMMagnetostaticParameters_H__ */

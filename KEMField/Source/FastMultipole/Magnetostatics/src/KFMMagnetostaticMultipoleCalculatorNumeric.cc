@@ -1,17 +1,17 @@
-#include "KFMElectrostaticMultipoleCalculatorNumeric.hh"
+#include "KFMMagnetostaticMultipoleCalculatorNumeric.hh"
 
 namespace KEMField
 {
 
 
-KFMElectrostaticMultipoleCalculatorNumeric::KFMElectrostaticMultipoleCalculatorNumeric()
+KFMMagnetostaticMultipoleCalculatorNumeric::KFMMagnetostaticMultipoleCalculatorNumeric()
 {
     fNumInt1D = new KVMPathIntegral<2>();
     fNumInt2D = new KVMSurfaceIntegral<2>();
 
     fSolidHarmonicWrapper =
-        new KVMFieldWrapper<KFMElectrostaticMultipoleCalculatorNumeric,
-                            &KFMElectrostaticMultipoleCalculatorNumeric::RegularSolidHarmonic>(this, 3, 2);
+        new KVMFieldWrapper<KFMMagnetostaticMultipoleCalculatorNumeric,
+                            &KFMMagnetostaticMultipoleCalculatorNumeric::RegularSolidHarmonic>(this, 3, 2);
 
     fLine = new KVMLineSegment();
     fTriangle = new KVMTriangularSurface();
@@ -25,7 +25,7 @@ KFMElectrostaticMultipoleCalculatorNumeric::KFMElectrostaticMultipoleCalculatorN
     fSolidHarmonics = nullptr;
 }
 
-KFMElectrostaticMultipoleCalculatorNumeric::~KFMElectrostaticMultipoleCalculatorNumeric()
+KFMMagnetostaticMultipoleCalculatorNumeric::~KFMMagnetostaticMultipoleCalculatorNumeric()
 {
     delete fNumInt1D;
     delete fNumInt2D;
@@ -36,7 +36,7 @@ KFMElectrostaticMultipoleCalculatorNumeric::~KFMElectrostaticMultipoleCalculator
 }
 
 
-void KFMElectrostaticMultipoleCalculatorNumeric::SetDegree(int l_max)
+void KFMMagnetostaticMultipoleCalculatorNumeric::SetDegree(int l_max)
 {
     fDegree = std::abs(l_max);
     fSize = (fDegree + 1) * (fDegree + 1);
@@ -46,13 +46,13 @@ void KFMElectrostaticMultipoleCalculatorNumeric::SetDegree(int l_max)
     fSolidHarmonics = new std::complex<double>[fSize];
 }
 
-void KFMElectrostaticMultipoleCalculatorNumeric::SetNumberOfQuadratureTerms(unsigned int n)
+void KFMMagnetostaticMultipoleCalculatorNumeric::SetNumberOfQuadratureTerms(unsigned int n)
 {
     fNumInt1D->SetNTerms(n);
     fNumInt2D->SetNTerms(n);
 }
 
-bool KFMElectrostaticMultipoleCalculatorNumeric::ConstructExpansion(double* target_origin,
+bool KFMMagnetostaticMultipoleCalculatorNumeric::ConstructExpansion(double* target_origin,
                                                                     const KFMPointCloud<3>* vertices,
                                                                     KFMScalarMultipoleExpansion* moments) const
 {
@@ -167,20 +167,20 @@ bool KFMElectrostaticMultipoleCalculatorNumeric::ConstructExpansion(double* targ
         }
         else {
             kfmout
-                << "KFMElectrostaticMultipoleCalculatorNumeric::ConstructExpansion: Warning, electrode type not recognized"
+                << "KFMMagnetostaticMultipoleCalculatorNumeric::ConstructExpansion: Warning, electrode type not recognized"
                 << std::endl;
             return false;
         };
     }
     else {
         kfmout
-            << "KFMElectrostaticMultipoleCalculatorAnalytic::ConstructExpansion: Warning, Primitive ID is corrupt or electrode does not exist"
+            << "KFMMagnetostaticMultipoleCalculatorAnalytic::ConstructExpansion: Warning, Primitive ID is corrupt or electrode does not exist"
             << std::endl;
         return false;
     }
 }
 
-void KFMElectrostaticMultipoleCalculatorNumeric::RegularSolidHarmonic(const double* point, double* result) const
+void KFMMagnetostaticMultipoleCalculatorNumeric::RegularSolidHarmonic(const double* point, double* result) const
 {
     fDel[0] = point[0] - fOrigin[0];
     fDel[1] = point[1] - fOrigin[1];

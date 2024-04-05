@@ -1,11 +1,11 @@
-#include "KFMElectrostaticNodeWorkScoreCalculator.hh"
+#include "KFMMagnetostaticNodeWorkScoreCalculator.hh"
 
 #include <cmath>
 
 namespace KEMField
 {
 
-KFMElectrostaticNodeWorkScoreCalculator::KFMElectrostaticNodeWorkScoreCalculator()
+KFMMagnetostaticNodeWorkScoreCalculator::KFMMagnetostaticNodeWorkScoreCalculator()
 {
     fNTerms = 0;
     fDivisions = 0;
@@ -31,10 +31,10 @@ KFMElectrostaticNodeWorkScoreCalculator::KFMElectrostaticNodeWorkScoreCalculator
     fRecursiveActor.SetOperationalActor(&fSingleNodeActor);
 };
 
-KFMElectrostaticNodeWorkScoreCalculator::~KFMElectrostaticNodeWorkScoreCalculator() = default;
+KFMMagnetostaticNodeWorkScoreCalculator::~KFMMagnetostaticNodeWorkScoreCalculator() = default;
 ;
 
-void KFMElectrostaticNodeWorkScoreCalculator::ApplyAction(KFMNode<KFMElectrostaticNodeObjects>* node)
+void KFMMagnetostaticNodeWorkScoreCalculator::ApplyAction(KFMNode<KFMMagnetostaticNodeObjects>* node)
 {
     fNMultipoleNodes = 0;
     fNonLeafMultipoleNodes = 0;
@@ -64,7 +64,7 @@ void KFMElectrostaticNodeWorkScoreCalculator::ApplyAction(KFMNode<KFMElectrostat
     }
 }
 
-void KFMElectrostaticNodeWorkScoreCalculator::CalculateFinalScore()
+void KFMMagnetostaticNodeWorkScoreCalculator::CalculateFinalScore()
 {
     fNodeScore = 0.0;
 

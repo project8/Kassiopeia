@@ -1,24 +1,24 @@
-#include "KFMElectrostaticMultipoleSet.hh"
+#include "KFMMagnetostaticMultipoleSet.hh"
 
 
 namespace KEMField
 {
 
-KFMElectrostaticMultipoleSet::KFMElectrostaticMultipoleSet() = default;
+KFMMagnetostaticMultipoleSet::KFMMagnetostaticMultipoleSet() = default;
 
-KFMElectrostaticMultipoleSet::~KFMElectrostaticMultipoleSet() = default;
+KFMMagnetostaticMultipoleSet::~KFMMagnetostaticMultipoleSet() = default;
 
-std::string KFMElectrostaticMultipoleSet::ClassName() const
+std::string KFMMagnetostaticMultipoleSet::ClassName() const
 {
-    return std::string("KFMElectrostaticMultipoleSet");
+    return std::string("KFMMagnetostaticMultipoleSet");
 }
 
-void KFMElectrostaticMultipoleSet::DefineOutputNode(KSAOutputNode* node) const
+void KFMMagnetostaticMultipoleSet::DefineOutputNode(KSAOutputNode* node) const
 {
     KFMScalarMultipoleExpansion::DefineOutputNode(node);
 }
 
-void KFMElectrostaticMultipoleSet::DefineInputNode(KSAInputNode* node)
+void KFMMagnetostaticMultipoleSet::DefineInputNode(KSAInputNode* node)
 {
     KFMScalarMultipoleExpansion::DefineInputNode(node);
 }

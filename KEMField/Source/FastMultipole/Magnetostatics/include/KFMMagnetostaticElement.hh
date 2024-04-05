@@ -1,5 +1,5 @@
-#ifndef KFMElectrostaticElement_HH__
-#define KFMElectrostaticElement_HH__
+#ifndef KFMMagnetostaticElement_HH__
+#define KFMMagnetostaticElement_HH__
 
 #include "KFMBall.hh"
 #include "KFMBasisData.hh"
@@ -11,8 +11,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticElement.hh
-*@class KFMElectrostaticElement
+*@file KFMMagnetostaticElement.hh
+*@class KFMMagnetostaticElement
 *@brief
 *@details
 *
@@ -22,12 +22,12 @@ namespace KEMField
 *
 */
 
-template<unsigned int SpatialDimension, unsigned int BasisDimension> class KFMElectrostaticElement
+template<unsigned int SpatialDimension, unsigned int BasisDimension> class KFMMagnetostaticElement
 {
   public:
-    KFMElectrostaticElement() = default;
+    KFMMagnetostaticElement() = default;
     ;
-    virtual ~KFMElectrostaticElement() = default;
+    virtual ~KFMMagnetostaticElement() = default;
     ;
 
     void SetIdentityPair(const KFMIdentityPair& id)
@@ -98,4 +98,4 @@ template<unsigned int SpatialDimension, unsigned int BasisDimension> class KFMEl
 }  // namespace KEMField
 
 
-#endif /* KFMElectrostaticElement_H__ */
+#endif /* KFMMagnetostaticElement_H__ */

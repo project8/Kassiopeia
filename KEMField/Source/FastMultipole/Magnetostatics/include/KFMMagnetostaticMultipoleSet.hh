@@ -1,5 +1,5 @@
-#ifndef KFMElectrostaticMultipoleSet_HH__
-#define KFMElectrostaticMultipoleSet_HH__
+#ifndef KFMMagnetostaticMultipoleSet_HH__
+#define KFMMagnetostaticMultipoleSet_HH__
 
 #include "KFMScalarMultipoleExpansion.hh"
 
@@ -8,8 +8,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticMultipoleSet.hh
-*@class KFMElectrostaticMultipoleSet
+*@file KFMMagnetostaticMultipoleSet.hh
+*@class KFMMagnetostaticMultipoleSet
 *@brief
 *@details
 *
@@ -19,17 +19,17 @@ namespace KEMField
 *
 */
 
-class KFMElectrostaticMultipoleSet : public KFMScalarMultipoleExpansion
+class KFMMagnetostaticMultipoleSet : public KFMScalarMultipoleExpansion
 {
   public:
-    KFMElectrostaticMultipoleSet();
-    ~KFMElectrostaticMultipoleSet() override;
-    KFMElectrostaticMultipoleSet(const KFMElectrostaticMultipoleSet& copyObject) :
+    KFMMagnetostaticMultipoleSet();
+    ~KFMMagnetostaticMultipoleSet() override;
+    KFMMagnetostaticMultipoleSet(const KFMMagnetostaticMultipoleSet& copyObject) :
         KFMScalarMultipoleExpansion(copyObject)
     {
         ;
     };
-    KFMElectrostaticMultipoleSet& operator=(const KFMElectrostaticMultipoleSet& copyObject) = default;
+    KFMMagnetostaticMultipoleSet& operator=(const KFMMagnetostaticMultipoleSet& copyObject) = default;
     ;
 
     std::string ClassName() const override;
@@ -40,9 +40,9 @@ class KFMElectrostaticMultipoleSet : public KFMScalarMultipoleExpansion
   private:
 };
 
-DefineKSAClassName(KFMElectrostaticMultipoleSet)
+DefineKSAClassName(KFMMagnetostaticMultipoleSet)
 
 }  // namespace KEMField
 
 
-#endif /* KFMElectrostaticMultipoleSet_H__ */
+#endif /* KFMMagnetostaticMultipoleSet_H__ */

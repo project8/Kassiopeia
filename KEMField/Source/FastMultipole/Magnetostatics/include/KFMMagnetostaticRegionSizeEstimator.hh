@@ -1,9 +1,9 @@
-#ifndef KFMElectrostaticRegionSizeEstimator_HH__
-#define KFMElectrostaticRegionSizeEstimator_HH__
+#ifndef KFMMagnetostaticRegionSizeEstimator_HH__
+#define KFMMagnetostaticRegionSizeEstimator_HH__
 
 #include "KFMBoundaryCalculator.hh"
 #include "KFMCube.hh"
-#include "KFMElectrostaticElementContainerBase.hh"
+#include "KFMMagnetostaticElementContainerBase.hh"
 
 #include <cstddef>
 
@@ -12,8 +12,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticRegionSizeEstimator.hh
-*@class KFMElectrostaticRegionSizeEstimator
+*@file KFMMagnetostaticRegionSizeEstimator.hh
+*@class KFMMagnetostaticRegionSizeEstimator
 *@brief
 *@details
 *
@@ -24,13 +24,13 @@ namespace KEMField
 */
 
 
-class KFMElectrostaticRegionSizeEstimator
+class KFMMagnetostaticRegionSizeEstimator
 {
   public:
-    KFMElectrostaticRegionSizeEstimator();
-    virtual ~KFMElectrostaticRegionSizeEstimator();
+    KFMMagnetostaticRegionSizeEstimator();
+    virtual ~KFMMagnetostaticRegionSizeEstimator();
 
-    void SetElectrostaticElementContainer(const KFMElectrostaticElementContainerBase<3, 1>* container)
+    void SetMagnetostaticElementContainer(const KFMMagnetostaticElementContainerBase<3, 1>* container)
     {
         fElementContainer = container;
     }
@@ -42,11 +42,11 @@ class KFMElectrostaticRegionSizeEstimator
     KFMBox<3> GetBoxEstimate() const;
 
   private:
-    const KFMElectrostaticElementContainerBase<3, 1>* fElementContainer;
+    const KFMMagnetostaticElementContainerBase<3, 1>* fElementContainer;
 
     KFMBoundaryCalculator<3>* fEstimator;
 };
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticRegionSizeEstimator_H__ */
+#endif /* KFMMagnetostaticRegionSizeEstimator_H__ */

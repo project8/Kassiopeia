@@ -1,4 +1,4 @@
-#include "KFMElectrostaticMultipoleBatchCalculator.hh"
+#include "KFMMagnetostaticMultipoleBatchCalculator.hh"
 
 #include "KFMMessaging.hh"
 
@@ -7,7 +7,7 @@
 namespace KEMField
 {
 
-KFMElectrostaticMultipoleBatchCalculator::KFMElectrostaticMultipoleBatchCalculator()
+KFMMagnetostaticMultipoleBatchCalculator::KFMMagnetostaticMultipoleBatchCalculator()
 {
     fDegree = 0;
     fNMaxItems = 0;
@@ -15,17 +15,17 @@ KFMElectrostaticMultipoleBatchCalculator::KFMElectrostaticMultipoleBatchCalculat
     fValidSize = 0;
 
     fInitialized = false;
-    fAnalyticCalc = new KFMElectrostaticMultipoleCalculatorAnalytic();
-    fNumericCalc = new KFMElectrostaticMultipoleCalculatorNumeric();
+    fAnalyticCalc = new KFMMagnetostaticMultipoleCalculatorAnalytic();
+    fNumericCalc = new KFMMagnetostaticMultipoleCalculatorNumeric();
 }
 
-KFMElectrostaticMultipoleBatchCalculator::~KFMElectrostaticMultipoleBatchCalculator()
+KFMMagnetostaticMultipoleBatchCalculator::~KFMMagnetostaticMultipoleBatchCalculator()
 {
     delete fAnalyticCalc;
     delete fNumericCalc;
 }
 
-void KFMElectrostaticMultipoleBatchCalculator::SetDegree(int l_max)
+void KFMMagnetostaticMultipoleBatchCalculator::SetDegree(int l_max)
 {
     if (!fInitialized)  //one time deal
     {
@@ -41,7 +41,7 @@ void KFMElectrostaticMultipoleBatchCalculator::SetDegree(int l_max)
     }
 }
 
-void KFMElectrostaticMultipoleBatchCalculator::Initialize()
+void KFMMagnetostaticMultipoleBatchCalculator::Initialize()
 {
 
     if (!fInitialized) {
@@ -69,7 +69,7 @@ void KFMElectrostaticMultipoleBatchCalculator::Initialize()
 }
 
 
-void KFMElectrostaticMultipoleBatchCalculator::ComputeMoments()
+void KFMMagnetostaticMultipoleBatchCalculator::ComputeMoments()
 {
     for (unsigned int i = 0; i < fValidSize; i++) {
         int tempID = fIDBuffer[i];

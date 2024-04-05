@@ -1,8 +1,8 @@
-#include "KFMElectrostaticNodeInspector.hh"
+#include "KFMMagnetostaticNodeInspector.hh"
 
 using namespace KEMField;
 
-KFMElectrostaticNodeInspector::KFMElectrostaticNodeInspector()
+KFMMagnetostaticNodeInspector::KFMMagnetostaticNodeInspector()
 {
     double fNumberOfNodes;
     fNumberOfNodesAtLevel.clear();
@@ -11,10 +11,10 @@ KFMElectrostaticNodeInspector::KFMElectrostaticNodeInspector()
     fDirectCallDistribution.clear();
 }
 
-KFMElectrostaticNodeInspector::~KFMElectrostaticNodeInspector() {}
+KFMMagnetostaticNodeInspector::~KFMMagnetostaticNodeInspector() {}
 
 
-void KFMElectrostaticNodeInspector::ApplyAction(KFMElectrostaticNode* node);
+void KFMMagnetostaticNodeInspector::ApplyAction(KFMMagnetostaticNode* node);
 {
     fNumberOfNodes++;
 
@@ -23,7 +23,7 @@ void KFMElectrostaticNodeInspector::ApplyAction(KFMElectrostaticNode* node);
 
         //figure out the number of Elements it owns
         int n_elements = 0;
-        KFMIdentitySet* id_set = KFMObjectRetriever<KFMElectrostaticNodeObjects, KFMIdentitySet>::GetNodeObject(node);
+        KFMIdentitySet* id_set = KFMObjectRetriever<KFMMagnetostaticNodeObjects, KFMIdentitySet>::GetNodeObject(node);
         if (id_set != NULL) {
             n_elements = id_set->GetSize();
         }
@@ -52,7 +52,7 @@ void KFMElectrostaticNodeInspector::ApplyAction(KFMElectrostaticNode* node);
 
 
         int n_direct_calls = node->GetNodeObject()->GetNumberOfNearbyElements();
-        KFMElectrostaticNode* temp = node->GetParent();
+        KFMMagnetostaticNode* temp = node->GetParent();
 
         while (temp != NULL) {
             n_direct_calls += temp->GetNodeObject()->GetNumberOfNearbyElements();
@@ -90,11 +90,11 @@ void KFMElectrostaticNodeInspector::ApplyAction(KFMElectrostaticNode* node);
 }
 
 
-void KFMElectrostaticNodeInspector::Print()
+void KFMMagnetostaticNodeInspector::Print()
 {
     std::stringstream msg;
 
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        std::string("Region tree constructed with the following properties: \n"),
                                        0,
@@ -102,7 +102,7 @@ void KFMElectrostaticNodeInspector::Print()
 
     msg.str("");
     msg << "Tree has a total of " << fNumberOfNodes << " nodes.";
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        msg.str(),
                                        0,
@@ -110,7 +110,7 @@ void KFMElectrostaticNodeInspector::Print()
 
     msg.str("");
     msg << "Tree has a total of " << fNumberOfNodesWithElements << " nodes which contain Elements. \n";
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        msg.str(),
                                        0,
@@ -118,14 +118,14 @@ void KFMElectrostaticNodeInspector::Print()
 
     msg.str("");
     msg << "Estimated response function memory usage is " << (fResponseMem / (1000. * 1000.)) << " MB";
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        msg.str(),
                                        0,
                                        2);
     msg.str("");
     msg << "Estimated region tree memory usage is " << (fRegionMem / (1000. * 1000.)) << " MB";
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        msg.str(),
                                        0,
@@ -133,7 +133,7 @@ void KFMElectrostaticNodeInspector::Print()
     msg.str("");
     msg << "Estimated total memory usage by FFTM is "
         << (fRegionMem / (1000. * 1000.)) + (fResponseMem / (1000. * 1000.)) << " MB \n";
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        msg.str(),
                                        0,
@@ -159,7 +159,7 @@ void KFMElectrostaticNodeInspector::Print()
                 << " nodes of length " << fLevelNodeLength[i] << ", with average Element radius of " << ave_size
                 << ". \n";
         }
-        KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+        KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                            std::string("Print"),
                                            msg.str(),
                                            0,
@@ -169,7 +169,7 @@ void KFMElectrostaticNodeInspector::Print()
 
     msg.str("");
     msg << "Max number of direct calls from a single node is " << fMaxNumberOfDirectCalls;
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        msg.str(),
                                        0,
@@ -177,7 +177,7 @@ void KFMElectrostaticNodeInspector::Print()
 
     msg.str("");
     msg << "Min number of direct calls from a single node is " << fMinNumberOfDirectCalls;
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        msg.str(),
                                        0,
@@ -186,7 +186,7 @@ void KFMElectrostaticNodeInspector::Print()
     msg.str("");
     msg << "Average number of direct calls from a single node is "
         << (double) fTotalNumberOfDirectCalls / (double) fNumberOfNodes << " \n";
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        msg.str(),
                                        0,
@@ -202,7 +202,7 @@ void KFMElectrostaticNodeInspector::Print()
 
     msg.str("");
     msg << "Direct Call Distribution:";
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        msg.str(),
                                        0,
@@ -211,7 +211,7 @@ void KFMElectrostaticNodeInspector::Print()
     msg.str("");
     msg << no_call_percent;
     msg << "% of nodes call 0% of all Elements.";
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        msg.str(),
                                        0,
@@ -229,7 +229,7 @@ void KFMElectrostaticNodeInspector::Print()
                 msg.str("");
                 msg << interval_percents[j];
                 msg << "% of nodes call between " << 2 * j << "% and " << 2 * (j + 1) << "% of all Elements.";
-                KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+                KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                                    std::string("Print"),
                                                    msg.str(),
                                                    0,
@@ -245,7 +245,7 @@ void KFMElectrostaticNodeInspector::Print()
                 }
 
                 msg << "% of nodes call more than " << 2 * j << "% of all Elements.";
-                KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+                KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                                    std::string("Print"),
                                                    msg.str(),
                                                    0,
@@ -260,7 +260,7 @@ void KFMElectrostaticNodeInspector::Print()
     }
 
 
-    KIOManager::GetInstance()->Message(std::string("KFMElectrostaticNodeInspector"),
+    KIOManager::GetInstance()->Message(std::string("KFMMagnetostaticNodeInspector"),
                                        std::string("Print"),
                                        std::string(""),
                                        0,

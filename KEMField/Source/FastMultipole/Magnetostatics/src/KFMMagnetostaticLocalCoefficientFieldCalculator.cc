@@ -1,4 +1,4 @@
-#include "KFMElectrostaticLocalCoefficientFieldCalculator.hh"
+#include "KFMMagnetostaticLocalCoefficientFieldCalculator.hh"
 
 #include "KEMConstants.hh"
 #include "KFMMath.hh"
@@ -12,9 +12,9 @@
 namespace KEMField
 {
 
-const double KFMElectrostaticLocalCoefficientFieldCalculator::fRootThreeOverTwo = 0.86602540378443865;
+const double KFMMagnetostaticLocalCoefficientFieldCalculator::fRootThreeOverTwo = 0.86602540378443865;
 
-KFMElectrostaticLocalCoefficientFieldCalculator::KFMElectrostaticLocalCoefficientFieldCalculator() : fDegree(-1)
+KFMMagnetostaticLocalCoefficientFieldCalculator::KFMMagnetostaticLocalCoefficientFieldCalculator() : fDegree(-1)
 {
     fPlmArr = nullptr;
     fPlmDervArr = nullptr;
@@ -51,7 +51,7 @@ KFMElectrostaticLocalCoefficientFieldCalculator::KFMElectrostaticLocalCoefficien
     fImagMomentsB = nullptr;
 }
 
-KFMElectrostaticLocalCoefficientFieldCalculator::~KFMElectrostaticLocalCoefficientFieldCalculator()
+KFMMagnetostaticLocalCoefficientFieldCalculator::~KFMMagnetostaticLocalCoefficientFieldCalculator()
 {
     delete[] fPlmArr;
     delete[] fPlmDervArr;
@@ -77,7 +77,7 @@ KFMElectrostaticLocalCoefficientFieldCalculator::~KFMElectrostaticLocalCoefficie
 }
 
 
-void KFMElectrostaticLocalCoefficientFieldCalculator::SetDegree(int degree)
+void KFMMagnetostaticLocalCoefficientFieldCalculator::SetDegree(int degree)
 {
     if (degree != fDegree) {
         if (degree > fDegree) {
@@ -109,7 +109,7 @@ void KFMElectrostaticLocalCoefficientFieldCalculator::SetDegree(int degree)
 
             if (!(fRotator->IsValid())) {
                 kfmout
-                    << "KFMElectrostaticLocalCoefficientFieldCalculator::SetDegree: Warning, multipole rotator is not valid! "
+                    << "KFMMagnetostaticLocalCoefficientFieldCalculator::SetDegree: Warning, multipole rotator is not valid! "
                     << std::endl;
             }
 
@@ -134,22 +134,22 @@ void KFMElectrostaticLocalCoefficientFieldCalculator::SetDegree(int degree)
 
             if (!(fRotator->IsValid())) {
                 kfmout
-                    << "KFMElectrostaticLocalCoefficientFieldCalculator::SetDegree: Warning, multipole rotator is not valid! "
+                    << "KFMMagnetostaticLocalCoefficientFieldCalculator::SetDegree: Warning, multipole rotator is not valid! "
                     << std::endl;
             }
         }
     }
 }
 
-void KFMElectrostaticLocalCoefficientFieldCalculator::SetExpansionOrigin(const double* origin)
+void KFMMagnetostaticLocalCoefficientFieldCalculator::SetExpansionOrigin(const double* origin)
 {
     fOrigin[0] = origin[0];
     fOrigin[1] = origin[1];
     fOrigin[2] = origin[2];
 }
 
-void KFMElectrostaticLocalCoefficientFieldCalculator::SetLocalCoefficients(
-    const KFMElectrostaticLocalCoefficientSet* set)
+void KFMMagnetostaticLocalCoefficientFieldCalculator::SetLocalCoefficients(
+    const KFMMagnetostaticLocalCoefficientSet* set)
 {
     if (set != nullptr) {
         SetDegree(set->GetDegree());
@@ -163,17 +163,17 @@ void KFMElectrostaticLocalCoefficientFieldCalculator::SetLocalCoefficients(
     }
 }
 
-void KFMElectrostaticLocalCoefficientFieldCalculator::SetRealMoments(const double* real_mom)
+void KFMMagnetostaticLocalCoefficientFieldCalculator::SetRealMoments(const double* real_mom)
 {
     fRealMoments = real_mom;
 }
 
-void KFMElectrostaticLocalCoefficientFieldCalculator::SetImaginaryMoments(const double* imag_mom)
+void KFMMagnetostaticLocalCoefficientFieldCalculator::SetImaginaryMoments(const double* imag_mom)
 {
     fImagMoments = imag_mom;
 }
 
-double KFMElectrostaticLocalCoefficientFieldCalculator::Potential(const double* p) const
+double KFMMagnetostaticLocalCoefficientFieldCalculator::Potential(const double* p) const
 {
     fDel[0] = p[0] - fOrigin[0];
     fDel[1] = p[1] - fOrigin[1];
@@ -216,7 +216,7 @@ double KFMElectrostaticLocalCoefficientFieldCalculator::Potential(const double* 
     return Potential();
 }
 
-void KFMElectrostaticLocalCoefficientFieldCalculator::ElectricField(const double* p, double* f) const
+void KFMMagnetostaticLocalCoefficientFieldCalculator::ElectricField(const double* p, double* f) const
 {
     fDel[0] = p[0] - fOrigin[0];
     fDel[1] = p[1] - fOrigin[1];
@@ -277,7 +277,7 @@ void KFMElectrostaticLocalCoefficientFieldCalculator::ElectricField(const double
     ElectricField(f);
 }
 
-double KFMElectrostaticLocalCoefficientFieldCalculator::Potential() const
+double KFMMagnetostaticLocalCoefficientFieldCalculator::Potential() const
 {
     double potential = 0.0;
     double partial_sum = 0.0;
@@ -302,7 +302,7 @@ double KFMElectrostaticLocalCoefficientFieldCalculator::Potential() const
     return potential;
 }
 
-void KFMElectrostaticLocalCoefficientFieldCalculator::ElectricField(double* f) const
+void KFMMagnetostaticLocalCoefficientFieldCalculator::ElectricField(double* f) const
 {
     double dr = 0.0;  //derivative w.r.t. to radius
     double dt = 0.0;  //(1/r)*(derivative w.r.t. to theta)
@@ -367,7 +367,7 @@ void KFMElectrostaticLocalCoefficientFieldCalculator::ElectricField(double* f) c
     f[2] = -1.0 * fKFactor * kfm_vector_get(fCartField, 2);
 }
 
-void KFMElectrostaticLocalCoefficientFieldCalculator::ElectricFieldNumerical(const double* p, double* f) const
+void KFMMagnetostaticLocalCoefficientFieldCalculator::ElectricFieldNumerical(const double* p, double* f) const
 {
     double temp[3];
     double eps = 1e-6 * fExpansionRadius;
@@ -415,7 +415,7 @@ void KFMElectrostaticLocalCoefficientFieldCalculator::ElectricFieldNumerical(con
 }
 
 
-void KFMElectrostaticLocalCoefficientFieldCalculator::ElectricFieldNearZPole(const double* p, double* f) const
+void KFMMagnetostaticLocalCoefficientFieldCalculator::ElectricFieldNearZPole(const double* p, double* f) const
 {
     //to avoid the z-pole we are going to perform a rotation
     //about the y-axis, evaluate the field, then rotate back to the original coordinates

@@ -1,14 +1,14 @@
-#ifndef KFMElectrostaticNode_HH__
-#define KFMElectrostaticNode_HH__
+#ifndef KFMMagnetostaticNode_HH__
+#define KFMMagnetostaticNode_HH__
 
 
 #include "KFMBall.hh"
 #include "KFMCollocationPointIdentitySet.hh"
 #include "KFMCube.hh"
 #include "KFMCubicSpaceTreeProperties.hh"
-#include "KFMElectrostaticElementContainerBase.hh"
-#include "KFMElectrostaticLocalCoefficientSet.hh"
-#include "KFMElectrostaticMultipoleSet.hh"
+#include "KFMMagnetostaticElementContainerBase.hh"
+#include "KFMMagnetostaticLocalCoefficientSet.hh"
+#include "KFMMagnetostaticMultipoleSet.hh"
 #include "KFMElementLocalInfluenceRange.hh"
 #include "KFMExternalIdentitySet.hh"
 #include "KFMIdentitySet.hh"
@@ -17,9 +17,9 @@
 #include "KFMNodeFlags.hh"
 #include "KFMNodeIdentityListRange.hh"
 
-#define KFMELECTROSTATICS_DIM   3
-#define KFMELECTROSTATICS_BASIS 1
-#define KFMELECTROSTATICS_FLAGS 2
+#define KFMMAGNETOSTATICS_DIM   3
+#define KFMMAGNETOSTATICS_BASIS 1
+#define KFMMAGNETOSTATICS_FLAGS 2
 
 
 namespace KEMField
@@ -27,8 +27,8 @@ namespace KEMField
 
 /*
 *
-*@file KFMElectrostaticNode.hh
-*@class KFMElectrostaticNode
+*@file KFMMagnetostaticNode.hh
+*@class KFMMagnetostaticNode
 *@brief
 *@details
 *
@@ -40,16 +40,16 @@ namespace KEMField
 
 
 //some typedefs...needed for picky compilers
-typedef KFMCubicSpaceTreeProperties<KFMELECTROSTATICS_DIM> three_dimensional_tree_properties;
+typedef KFMCubicSpaceTreeProperties<KFMMAGNETOSTATICS_DIM> three_dimensional_tree_properties;
 
 using three_dimensional_constant_charge_density_element_container =
-    KFMElectrostaticElementContainerBase<KFMELECTROSTATICS_DIM, KFMELECTROSTATICS_BASIS>;
+    KFMMagnetostaticElementContainerBase<KFMMAGNETOSTATICS_DIM, KFMMAGNETOSTATICS_BASIS>;
 
-using three_dimensional_cube = KFMCube<KFMELECTROSTATICS_DIM>;
+using three_dimensional_cube = KFMCube<KFMMAGNETOSTATICS_DIM>;
 
-using electrostatic_node_flags = KFMNodeFlags<KFMELECTROSTATICS_FLAGS>;
+using electrostatic_node_flags = KFMNodeFlags<KFMMAGNETOSTATICS_FLAGS>;
 
-using KFMElectrostaticNodeObjects =
+using KFMMagnetostaticNodeObjects =
     KEMField::KTypelist<three_dimensional_tree_properties,
         KEMField::KTypelist<three_dimensional_constant_charge_density_element_container,
             KEMField::KTypelist<KFMIdentitySet,
@@ -57,12 +57,12 @@ using KFMElectrostaticNodeObjects =
                     KEMField::KTypelist<KFMCollocationPointIdentitySet,
                         KEMField::KTypelist<three_dimensional_cube,
                             KEMField::KTypelist<electrostatic_node_flags,
-                                KEMField::KTypelist<KFMElectrostaticMultipoleSet,
-                                    KEMField::KTypelist<KFMElectrostaticLocalCoefficientSet,
+                                KEMField::KTypelist<KFMMagnetostaticMultipoleSet,
+                                    KEMField::KTypelist<KFMMagnetostaticLocalCoefficientSet,
                                         KEMField::KNullType>>>>>>>>>;
 
-using KFMElectrostaticNode = KFMNode<KFMElectrostaticNodeObjects>;
+using KFMMagnetostaticNode = KFMNode<KFMMagnetostaticNodeObjects>;
 
 }  // namespace KEMField
 
-#endif /* KFMElectrostaticNode_H__ */
+#endif /* KFMMagnetostaticNode_H__ */
