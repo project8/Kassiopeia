@@ -32,6 +32,7 @@ target_link_libraries (KFMUtility
         KFMCore
         KFMInterfaceBoundaryIntegral
         KFMElectrostatics
+        KFMMagnetostatics
 )
 
 if(KEMField_USE_OPENCL)
